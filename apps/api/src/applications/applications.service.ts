@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DocumentReviewService } from '../document-review/document-review.service';
+import type { ApplicationReview } from '../document-review/document-review.types';
 import { ApplicationDataService } from './application-data.service';
 import type { ApplicationListItem } from './application-list-item.types';
 import type { Application } from './application.types';
@@ -41,5 +42,9 @@ export class ApplicationsService {
         ),
       };
     });
+  }
+
+  getReview(applicationId: string): ApplicationReview {
+    return this.documentReviewService.buildReview(this.getById(applicationId));
   }
 }

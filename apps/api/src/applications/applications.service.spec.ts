@@ -27,6 +27,27 @@ describe('ApplicationsService', () => {
     );
   });
 
+  it('builds a full review for an indexed application', () => {
+    const review = service.getReview('fr-004');
+
+    expect(review.applicationId).toBe('fr-004');
+    expect(review.company.name).toBe('Fleurs de Saison');
+    expect(review.financingRequest.id).toBe('fr-004');
+    expect(review.problems.map(({ id }) => id)).toEqual([
+      'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
+      'EXTRACTION_FAILED:d-012',
+      'SCANNED_PDF_NO_TEXT_LAYER:d-012',
+    ]);
+    expect(review.documentReviewStatus).toBe('needs_action');
+  });
+
+  it('throws NotFoundException when building a review for an unknown application', () => {
+    expect(() => service.getReview('fr-999')).toThrow(NotFoundException);
+    expect(() => service.getReview('fr-999')).toThrow(
+      'Application "fr-999" not found',
+    );
+  });
+
   it('projects the four fixtures into deterministic list items', () => {
     expect(service.list()).toEqual([
       {
