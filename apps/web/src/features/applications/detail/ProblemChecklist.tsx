@@ -2,6 +2,7 @@ import type { DocumentProblem } from '../application.types'
 import {
   countSelectedProblems,
   groupProblems,
+  isClientFacingBlockingProblem,
 } from './detail.logic'
 import {
   problemSourceLabels,
@@ -35,74 +36,86 @@ function ProblemCard({
 }: ProblemCardProps) {
   const severity = severityPresentation[problem.severity]
   const inputId = `problem-${problem.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+  const isSelectable = isClientFacingBlockingProblem(problem)
+  const content = (
+    <div className="flex items-start gap-4">
+      {isSelectable && (
+        <input
+          checked={checked}
+          className="mt-1 size-4 shrink-0 accent-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
+          id={inputId}
+          onChange={(event) =>
+            onSelectionChange(problem.id, event.target.checked)
+          }
+          type="checkbox"
+        />
+      )}
+
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${severity.className}`}
+          >
+            {severity.label}
+          </span>
+          <span className="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
+            {problemSourceLabels[problem.source]}
+          </span>
+          {!isSelectable && (
+            <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
+              Contexte uniquement
+            </span>
+          )}
+        </div>
+
+        <h4 className="mt-3 text-sm font-semibold text-slate-950 sm:text-base">
+          {problem.analystLabel}
+        </h4>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          {problem.description}
+        </p>
+
+        {isSelectable && problem.clientFacingLabel && (
+          <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5">
+            <p className="text-xs font-semibold tracking-wide text-emerald-800 uppercase">
+              Demande au client
+            </p>
+            <p className="mt-1 text-sm text-emerald-950">
+              {problem.clientFacingLabel}
+            </p>
+          </div>
+        )}
+
+        <div className="mt-4 border-t border-slate-200 pt-4">
+          <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+            Action recommandée
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-900">
+            {problem.recommendedAction}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <li>
-      <label
-        className={`block rounded-xl border p-4 transition sm:p-5 ${
-          checked
-            ? 'border-slate-400 bg-slate-50 shadow-sm'
-            : 'border-slate-200 bg-white hover:border-slate-300'
-        }`}
-        htmlFor={inputId}
-      >
-        <div className="flex items-start gap-4">
-          <input
-            checked={checked}
-            className="mt-1 size-4 shrink-0 accent-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
-            id={inputId}
-            onChange={(event) =>
-              onSelectionChange(problem.id, event.target.checked)
-            }
-            type="checkbox"
-          />
-
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span
-                className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${severity.className}`}
-              >
-                {severity.label}
-              </span>
-              <span className="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
-                {problemSourceLabels[problem.source]}
-              </span>
-              {!problem.clientFacing && (
-                <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
-                  Exclu de la communication client
-                </span>
-              )}
-            </div>
-
-            <h4 className="mt-3 text-sm font-semibold text-slate-950 sm:text-base">
-              {problem.analystLabel}
-            </h4>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {problem.description}
-            </p>
-
-            {problem.clientFacing && problem.clientFacingLabel && (
-              <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5">
-                <p className="text-xs font-semibold tracking-wide text-emerald-800 uppercase">
-                  Demande au client
-                </p>
-                <p className="mt-1 text-sm text-emerald-950">
-                  {problem.clientFacingLabel}
-                </p>
-              </div>
-            )}
-
-            <div className="mt-4 border-t border-slate-200 pt-4">
-              <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                Action recommandée
-              </p>
-              <p className="mt-1 text-sm font-medium text-slate-900">
-                {problem.recommendedAction}
-              </p>
-            </div>
-          </div>
+      {isSelectable ? (
+        <label
+          className={`block rounded-xl border p-4 transition sm:p-5 ${
+            checked
+              ? 'border-slate-400 bg-slate-50 shadow-sm'
+              : 'border-slate-200 bg-white hover:border-slate-300'
+          }`}
+          htmlFor={inputId}
+        >
+          {content}
+        </label>
+      ) : (
+        <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          {content}
         </div>
-      </label>
+      )}
     </li>
   )
 }
@@ -131,8 +144,13 @@ function ProblemGroup({
           </p>
         </div>
         <p className="shrink-0 text-xs font-semibold text-slate-500">
-          {selectedCount} sur {problems.length}{' '}
-          {selectedCount === 1 ? 'sélectionné' : 'sélectionnés'}
+          {problems.some(isClientFacingBlockingProblem)
+            ? `${selectedCount} sur ${problems.length} ${
+                selectedCount === 1 ? 'sélectionné' : 'sélectionnés'
+              }`
+            : `${problems.length} ${
+                problems.length === 1 ? 'problème interne' : 'problèmes internes'
+              }`}
         </p>
       </div>
 
@@ -175,8 +193,8 @@ export function ProblemChecklist({
             Liste des problèmes détectés
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Confirmez les problèmes à conserver avant de préparer la
-            communication au client.
+            Sélectionnez les problèmes bloquants à communiquer au client. Les
+            autres problèmes restent affichés à titre de contexte.
           </p>
         </div>
         <p className="text-sm font-medium text-slate-500">
@@ -208,11 +226,11 @@ export function ProblemChecklist({
 
           {analystOnlyProblems.length > 0 && (
             <ProblemGroup
-              description="Ces problèmes restent internes et ne sont jamais inclus dans la communication au client."
+              description="Ces problèmes restent visibles pour l’analyse, sans être sélectionnables pour la génération de l’e-mail."
               onSelectionChange={onSelectionChange}
               problems={analystOnlyProblems}
               selectedProblemIds={selectedProblemIds}
-              title="Contexte réservé à l’analyste"
+              title="Autres problèmes détectés"
             />
           )}
         </div>

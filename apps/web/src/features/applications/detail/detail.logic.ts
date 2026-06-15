@@ -25,7 +25,11 @@ export function createProblemSelection(
   return {
     selectedProblemIds: new Set(
       problems
-        .filter((problem) => problem.selectedByDefault)
+        .filter(
+          (problem) =>
+            isClientFacingBlockingProblem(problem) &&
+            problem.selectedByDefault,
+        )
         .map((problem) => problem.id),
     ),
     revision: 0,
@@ -62,7 +66,7 @@ export function groupProblems(
   const analystOnlyProblems: DocumentProblem[] = []
 
   for (const problem of problems) {
-    if (problem.clientFacing) {
+    if (isClientFacingBlockingProblem(problem)) {
       clientFacingProblems.push(problem)
     } else {
       analystOnlyProblems.push(problem)
@@ -72,13 +76,20 @@ export function groupProblems(
   return { clientFacingProblems, analystOnlyProblems }
 }
 
-export function getSelectedClientFacingProblems(
+export function isClientFacingBlockingProblem(
+  problem: DocumentProblem,
+): boolean {
+  return problem.severity === 'blocking' && problem.clientFacing
+}
+
+export function getSelectedClientFacingBlockingProblems(
   problems: readonly DocumentProblem[],
   selectedProblemIds: ReadonlySet<string>,
 ): DocumentProblem[] {
   return problems.filter(
     (problem) =>
-      problem.clientFacing && selectedProblemIds.has(problem.id),
+      isClientFacingBlockingProblem(problem) &&
+      selectedProblemIds.has(problem.id),
   )
 }
 

@@ -4,7 +4,7 @@ import {
   generateEmailPreview,
   getApplicationsErrorMessage,
 } from '../applications.api'
-import { getSelectedClientFacingProblems } from './detail.logic'
+import { getSelectedClientFacingBlockingProblems } from './detail.logic'
 
 interface EmailAssistantPanelProps {
   applicationId: string
@@ -42,10 +42,8 @@ export function EmailAssistantPanel({
   const activeRequestRef = useRef<AbortController | null>(null)
   const requestTokenRef = useRef(0)
 
-  const selectedClientFacingProblems = getSelectedClientFacingProblems(
-    problems,
-    selectedProblemIds,
-  )
+  const selectedClientFacingProblems =
+    getSelectedClientFacingBlockingProblems(problems, selectedProblemIds)
   const selectedClientFacingCount = selectedClientFacingProblems.length
   const hasSelectedClientFacingProblem = selectedClientFacingCount > 0
   const isGenerating =

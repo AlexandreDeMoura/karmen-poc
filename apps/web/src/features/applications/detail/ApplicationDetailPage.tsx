@@ -23,6 +23,7 @@ import {
   getDiagnosticSignals,
   groupDocuments,
   indexDiagnosticsByDocumentId,
+  isClientFacingBlockingProblem,
 } from './detail.logic'
 import {
   extractionStatusPresentation,
@@ -542,6 +543,9 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
     () => indexDiagnosticsByDocumentId(review.diagnostics),
     [review.diagnostics],
   )
+  const hasClientFacingBlockingProblem = review.problems.some(
+    isClientFacingBlockingProblem,
+  )
   const updateProblemSelection = (problemId: string, selected: boolean) => {
     setProblemSelection((currentSelection) =>
       changeProblemSelection(currentSelection, problemId, selected),
@@ -697,12 +701,14 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
           selectedProblemIds={problemSelection.selectedProblemIds}
         />
 
-        <EmailAssistantPanel
-          applicationId={review.applicationId}
-          problems={review.problems}
-          selectedProblemIds={problemSelection.selectedProblemIds}
-          selectionRevision={problemSelection.revision}
-        />
+        {hasClientFacingBlockingProblem && (
+          <EmailAssistantPanel
+            applicationId={review.applicationId}
+            problems={review.problems}
+            selectedProblemIds={problemSelection.selectedProblemIds}
+            selectionRevision={problemSelection.revision}
+          />
+        )}
       </ReviewDrawer>
     </>
   )
