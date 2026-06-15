@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { DocumentProblem, EmailPreview } from './application.types'
-import { generateEmailPreview } from './applications.api'
+import type { DocumentProblem, EmailPreview } from '../application.types'
+import { generateEmailPreview } from '../applications.api'
 
 interface EmailAssistantPanelProps {
   applicationId: string
@@ -157,8 +157,8 @@ export function EmailAssistantPanel({
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+      <div className="flex flex-col gap-5 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
           <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
             Client communication
@@ -288,7 +288,7 @@ export function EmailAssistantPanel({
             />
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-center @2xl:justify-between">
             <p className="text-xs leading-5 text-slate-500">
               This preview is not sent automatically. Copying uses the current
               edited body.

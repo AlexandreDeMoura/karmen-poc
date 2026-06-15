@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { EmailAssistantPanel } from './EmailAssistantPanel'
 import { ProblemChecklist } from './ProblemChecklist'
-import { ReviewStatusBadge } from './ReviewStatusBadge'
+import { ReviewStatusBadge } from '../shared/ReviewStatusBadge'
 import type {
   ApplicationDocument,
   ApplicationReview,
@@ -9,11 +9,11 @@ import type {
   ExtractionStatus,
   FinancingType,
   RiskBucket,
-} from './application.types'
+} from '../application.types'
 import {
   ApplicationsApiError,
   fetchApplicationReview,
-} from './applications.api'
+} from '../applications.api'
 
 interface ApplicationDetailPageProps {
   applicationId: string
@@ -538,6 +538,97 @@ function DocumentGroup({
   )
 }
 
+interface ReviewDrawerProps {
+  open: boolean
+  onClose: () => void
+  title: string
+  description: string
+  children: React.ReactNode
+}
+
+function ReviewDrawer({
+  open,
+  onClose,
+  title,
+  description,
+  children,
+}: ReviewDrawerProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const previouslyFocused = document.activeElement as HTMLElement | null
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+      previouslyFocused?.focus?.()
+    }
+  }, [open, onClose])
+
+  return (
+    <div className={`fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`}>
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 bg-slate-900/40 transition-opacity duration-300 ${
+          open ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={onClose}
+      />
+
+      <div
+        aria-label={title}
+        aria-modal="true"
+        className={`@container absolute inset-y-0 right-0 flex w-full max-w-xl flex-col bg-slate-50 shadow-2xl transition-transform duration-300 ease-out ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        inert={!open}
+        role="dialog"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-6 py-5">
+          <div>
+            <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
+              Analyst workspace
+            </p>
+            <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+              {title}
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              {description}
+            </p>
+          </div>
+          <button
+            aria-label="Close review panel"
+            className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg leading-none text-slate-500 transition hover:border-slate-300 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
+            onClick={onClose}
+            ref={closeButtonRef}
+            type="button"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface ApplicationDetailProps {
   review: ApplicationReview
 }
@@ -552,6 +643,8 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
       ),
   )
   const [selectionRevision, setSelectionRevision] = useState(0)
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const closePanel = useCallback(() => setIsPanelOpen(false), [])
   const taxReturns = review.documents.filter(
     (document) => document.type === 'liasse_fiscale',
   )
@@ -703,18 +796,42 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         </div>
       </section>
 
-      <ProblemChecklist
-        onSelectionChange={updateProblemSelection}
-        problems={review.problems}
-        selectedProblemIds={selectedProblemIds}
-      />
+      <button
+        aria-expanded={isPanelOpen}
+        aria-haspopup="dialog"
+        className={`fixed right-6 bottom-6 z-40 inline-flex items-center gap-2.5 rounded-full bg-slate-950 px-5 py-3.5 text-sm font-semibold text-white shadow-xl transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 ${
+          isPanelOpen ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+        onClick={() => setIsPanelOpen(true)}
+        type="button"
+      >
+        Review &amp; email
+        {review.problems.length > 0 && (
+          <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white/15 px-1.5 py-0.5 text-xs font-bold tabular-nums">
+            {review.problems.length}
+          </span>
+        )}
+      </button>
 
-      <EmailAssistantPanel
-        applicationId={review.applicationId}
-        problems={review.problems}
-        selectedProblemIds={selectedProblemIds}
-        selectionRevision={selectionRevision}
-      />
+      <ReviewDrawer
+        description="Confirm detected problems, then draft the client email."
+        onClose={closePanel}
+        open={isPanelOpen}
+        title="Document review"
+      >
+        <ProblemChecklist
+          onSelectionChange={updateProblemSelection}
+          problems={review.problems}
+          selectedProblemIds={selectedProblemIds}
+        />
+
+        <EmailAssistantPanel
+          applicationId={review.applicationId}
+          problems={review.problems}
+          selectedProblemIds={selectedProblemIds}
+          selectionRevision={selectionRevision}
+        />
+      </ReviewDrawer>
     </>
   )
 }

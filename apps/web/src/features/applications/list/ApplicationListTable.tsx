@@ -1,10 +1,10 @@
-import { ReviewStatusBadge } from './ReviewStatusBadge'
+import { ReviewStatusBadge } from '../shared/ReviewStatusBadge'
 import type {
   ApplicationListItem,
   FinancingType,
   ProblemSummary,
   RiskBucket,
-} from './application.types'
+} from '../application.types'
 
 const amountFormatter = new Intl.NumberFormat('fr-FR', {
   style: 'currency',

@@ -1,4 +1,4 @@
-import type { DocumentReviewStatus } from './application.types'
+import type { DocumentReviewStatus } from '../application.types'
 
 const statusPresentation: Record<
   DocumentReviewStatus,

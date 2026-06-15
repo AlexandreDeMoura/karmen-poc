@@ -2,7 +2,7 @@ import type {
   DocumentProblem,
   ProblemSeverity,
   ProblemSource,
-} from './application.types'
+} from '../application.types'
 
 const severityPresentation: Record<
   ProblemSeverity,
@@ -143,7 +143,7 @@ function ProblemGroup({
       <legend className="text-base font-semibold text-slate-950">
         {title}
       </legend>
-      <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mt-1 flex flex-col gap-3 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
           <p className="mt-1 text-sm leading-6 text-slate-500">
             {description}
@@ -185,8 +185,8 @@ export function ProblemChecklist({
   const hasSelectedClientFacingProblem = selectedClientFacingCount > 0
 
   return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+      <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
           <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
             Analyst validation

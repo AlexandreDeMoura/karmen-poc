@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ApplicationListTable } from './ApplicationListTable'
-import type { ApplicationListItem } from './application.types'
-import { fetchApplications } from './applications.api'
+import type { ApplicationListItem } from '../application.types'
+import { fetchApplications } from '../applications.api'
 
 type ApplicationsState =
   | { status: 'loading' }

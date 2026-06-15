@@ -1,5 +1,7 @@
-import { ApplicationListPage } from './features/applications/ApplicationListPage'
-import { ApplicationDetailPage } from './features/applications/ApplicationDetailPage'
+import {
+  ApplicationDetailPage,
+  ApplicationListPage,
+} from './features/applications'
 
 type AppRoute =
   | { page: 'list' }
