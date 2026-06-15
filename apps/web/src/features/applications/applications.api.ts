@@ -13,6 +13,16 @@ import type {
 
 const APPLICATIONS_ENDPOINT = '/api/applications'
 
+export class ApplicationsApiError extends Error {
+  readonly status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'ApplicationsApiError'
+    this.status = status
+  }
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -314,12 +324,13 @@ function getErrorDetail(responseBody: string, statusText: string): string {
 async function getResponseError(
   response: Response,
   requestName: string,
-): Promise<Error> {
+): Promise<ApplicationsApiError> {
   const responseBody = await response.text()
   const detail = getErrorDetail(responseBody, response.statusText)
 
-  return new Error(
+  return new ApplicationsApiError(
     `${requestName} failed (${response.status})${detail ? `: ${detail}` : ''}`,
+    response.status,
   )
 }
 
