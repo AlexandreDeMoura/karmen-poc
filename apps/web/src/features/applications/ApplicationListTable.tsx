@@ -61,6 +61,10 @@ const problemPresentation: Array<{
   },
 ]
 
+function getApplicationPath(applicationId: string) {
+  return `/applications/${encodeURIComponent(applicationId)}`
+}
+
 interface ApplicationListTableProps {
   applications: ApplicationListItem[]
 }
@@ -156,6 +160,13 @@ function ApplicationCards({ applications }: ApplicationListTableProps) {
               </dd>
             </div>
           </dl>
+
+          <a
+            className="mt-5 inline-flex text-sm font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
+            href={getApplicationPath(application.applicationId)}
+          >
+            Review application
+          </a>
         </article>
       ))}
     </div>
@@ -198,6 +209,9 @@ export function ApplicationListTable({
                 <th className="px-5 py-4" scope="col">
                   Problems
                 </th>
+                <th className="px-5 py-4 text-right" scope="col">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -234,6 +248,14 @@ export function ApplicationListTable({
                   </td>
                   <td className="px-5 py-5">
                     <ProblemCounts summary={application.problemSummary} />
+                  </td>
+                  <td className="px-5 py-5 text-right">
+                    <a
+                      className="text-sm font-semibold whitespace-nowrap text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
+                      href={getApplicationPath(application.applicationId)}
+                    >
+                      Review
+                    </a>
                   </td>
                 </tr>
               ))}
