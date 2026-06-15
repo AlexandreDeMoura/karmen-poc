@@ -1,12 +1,14 @@
 import { NotFoundException } from '@nestjs/common';
+import { MockDocumentDiagnosticsService } from '../document-diagnostics/mock-document-diagnostics.service';
+import { DocumentReviewService } from '../document-review/document-review.service';
 import { ApplicationDataService } from './application-data.service';
-import { ApplicationReviewSummaryService } from './application-review-summary.service';
 import { ApplicationsService } from './applications.service';
 
 describe('ApplicationsService', () => {
+  const diagnosticsService = new MockDocumentDiagnosticsService();
   const service = new ApplicationsService(
     new ApplicationDataService(),
-    new ApplicationReviewSummaryService(),
+    new DocumentReviewService(diagnosticsService),
   );
 
   it.each([
@@ -65,7 +67,7 @@ describe('ApplicationsService', () => {
         riskBucket: 'medium',
         globalScore: 67,
         documentReviewStatus: 'needs_action',
-        problemSummary: { blocking: 1, warning: 0, info: 0 },
+        problemSummary: { blocking: 2, warning: 1, info: 0 },
       },
     ]);
   });

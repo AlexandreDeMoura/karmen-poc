@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { DocumentReviewService } from '../document-review/document-review.service';
 import { ApplicationDataService } from './application-data.service';
 import type { ApplicationListItem } from './application-list-item.types';
-import { ApplicationReviewSummaryService } from './application-review-summary.service';
 import type { Application } from './application.types';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     private readonly applicationDataService: ApplicationDataService,
-    private readonly applicationReviewSummaryService: ApplicationReviewSummaryService,
+    private readonly documentReviewService: DocumentReviewService,
   ) {}
 
   getById(applicationId: string): Application {
@@ -26,8 +26,7 @@ export class ApplicationsService {
 
   list(): ApplicationListItem[] {
     return this.applicationDataService.getApplications().map((application) => {
-      const { documentReviewStatus, problemSummary } =
-        this.applicationReviewSummaryService.summarize(application);
+      const review = this.documentReviewService.buildReview(application);
 
       return {
         applicationId: application.financing_request.id,
@@ -36,8 +35,10 @@ export class ApplicationsService {
         requestedAmount: application.financing_request.amount,
         riskBucket: application.score.risk_bucket,
         globalScore: application.score.global_score,
-        documentReviewStatus,
-        problemSummary,
+        documentReviewStatus: review.documentReviewStatus,
+        problemSummary: this.documentReviewService.summarizeProblems(
+          review.problems,
+        ),
       };
     });
   }

@@ -73,7 +73,7 @@ describe('AppController (e2e)', () => {
           riskBucket: 'medium',
           globalScore: 67,
           documentReviewStatus: 'needs_action',
-          problemSummary: { blocking: 1, warning: 0, info: 0 },
+          problemSummary: { blocking: 2, warning: 1, info: 0 },
         },
       ]);
   });
