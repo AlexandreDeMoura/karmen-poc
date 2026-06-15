@@ -1,7 +1,9 @@
 {
   "name": "karmen-poc",
-    "private": true,
-  "workspaces": ["apps/*"],
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "version": "1.0.0",
   "description": "Technical assessment for Product Engineer position at Karmen",
   "license": "ISC",
@@ -9,6 +11,12 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "dev": "concurrently -n web,api -c blue,green \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run start:dev --workspace=apps/api",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }
