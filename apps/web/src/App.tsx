@@ -2,32 +2,7 @@ import {
   ApplicationDetailPage,
   ApplicationListPage,
 } from './features/applications'
-
-type AppRoute =
-  | { page: 'list' }
-  | { page: 'detail'; applicationId: string }
-  | { page: 'not-found' }
-
-function selectRoute(pathname: string): AppRoute {
-  if (pathname === '/') {
-    return { page: 'list' }
-  }
-
-  const detailMatch = pathname.match(/^\/applications\/([^/]+)\/?$/)
-
-  if (!detailMatch) {
-    return { page: 'not-found' }
-  }
-
-  try {
-    return {
-      page: 'detail',
-      applicationId: decodeURIComponent(detailMatch[1]),
-    }
-  } catch {
-    return { page: 'not-found' }
-  }
-}
+import { selectApplicationsRoute } from './features/applications/applications.routes'
 
 function RouteNotFound() {
   return (
@@ -54,7 +29,7 @@ function RouteNotFound() {
 }
 
 function App() {
-  const route = selectRoute(window.location.pathname)
+  const route = selectApplicationsRoute(window.location.pathname)
 
   if (route.page === 'list') {
     return <ApplicationListPage />
