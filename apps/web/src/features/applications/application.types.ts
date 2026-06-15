@@ -58,12 +58,6 @@ export interface Score {
   global_score: number
 }
 
-export interface ProblemSummary {
-  blocking: number
-  warning: number
-  info: number
-}
-
 export interface ApplicationListItem {
   applicationId: string
   companyName: string
@@ -72,7 +66,6 @@ export interface ApplicationListItem {
   riskBucket: RiskBucket
   globalScore: number
   documentReviewStatus: DocumentReviewStatus
-  problemSummary: ProblemSummary
 }
 
 export interface DocumentRequirements {

@@ -40,9 +40,6 @@ export class ApplicationsService {
         riskBucket: application.score.risk_bucket,
         globalScore: application.score.global_score,
         documentReviewStatus: review.documentReviewStatus,
-        problemSummary: this.documentReviewService.summarizeProblems(
-          review.problems,
-        ),
       };
     });
   }

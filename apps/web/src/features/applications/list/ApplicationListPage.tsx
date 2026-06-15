@@ -16,13 +16,12 @@ function LoadingState() {
         {[0, 1, 2, 3].map((row) => (
           <div
             key={row}
-            className="grid grid-cols-[2fr_1fr] gap-6 px-5 py-6 sm:grid-cols-4 lg:grid-cols-8"
+            className="grid grid-cols-[2fr_1fr] gap-6 px-5 py-6 sm:grid-cols-4 lg:grid-cols-7"
           >
             <div className="h-4 animate-pulse rounded bg-slate-200" />
             <div className="h-4 animate-pulse rounded bg-slate-100" />
             <div className="hidden h-4 animate-pulse rounded bg-slate-100 sm:block" />
             <div className="hidden h-4 animate-pulse rounded bg-slate-100 sm:block" />
-            <div className="hidden h-4 animate-pulse rounded bg-slate-100 lg:block" />
             <div className="hidden h-4 animate-pulse rounded bg-slate-100 lg:block" />
             <div className="hidden h-4 animate-pulse rounded bg-slate-100 lg:block" />
             <div className="hidden h-4 animate-pulse rounded bg-slate-100 lg:block" />

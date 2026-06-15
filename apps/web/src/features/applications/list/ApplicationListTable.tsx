@@ -1,18 +1,11 @@
 import { ReviewStatusBadge } from '../shared/ReviewStatusBadge'
-import type {
-  ApplicationListItem,
-  ProblemSummary,
-  RiskBucket,
-} from '../application.types'
+import type { ApplicationListItem, RiskBucket } from '../application.types'
 import {
   financingTypeLabels,
   formatAmount,
 } from '../application.presentation'
 import { getApplicationPath } from '../applications.routes'
-import {
-  problemPresentation,
-  riskPresentation,
-} from './list.presentation'
+import { riskPresentation } from './list.presentation'
 
 interface ApplicationListTableProps {
   applications: ApplicationListItem[]
@@ -31,28 +24,6 @@ function RiskBadge({ riskBucket }: RiskBadgeProps) {
     >
       {presentation.label}
     </span>
-  )
-}
-
-interface ProblemCountsProps {
-  summary: ProblemSummary
-}
-
-function ProblemCounts({ summary }: ProblemCountsProps) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {problemPresentation.map((problem) => (
-        <span
-          key={problem.key}
-          aria-label={`${summary[problem.key]} ${problem.label}`}
-          className={`inline-flex items-center justify-center gap-1 rounded-md px-2 py-1 text-xs font-semibold ${problem.className}`}
-          title={problem.label}
-        >
-          <span aria-hidden="true">{problem.shortLabel}</span>
-          {summary[problem.key]}
-        </span>
-      ))}
-    </div>
   )
 }
 
@@ -102,12 +73,6 @@ function ApplicationCards({ applications }: ApplicationListTableProps) {
                 <span className="font-normal text-slate-400"> / 100</span>
               </dd>
             </div>
-            <div className="col-span-2">
-              <dt className="mb-2 text-slate-500">Problems</dt>
-              <dd>
-                <ProblemCounts summary={application.problemSummary} />
-              </dd>
-            </div>
           </dl>
 
           <a
@@ -155,9 +120,6 @@ export function ApplicationListTable({
                 <th className="px-4 py-4" scope="col">
                   Review status
                 </th>
-                <th className="px-5 py-4" scope="col">
-                  Problems
-                </th>
                 <th className="px-5 py-4 text-right" scope="col">
                   Action
                 </th>
@@ -194,9 +156,6 @@ export function ApplicationListTable({
                     <ReviewStatusBadge
                       status={application.documentReviewStatus}
                     />
-                  </td>
-                  <td className="px-5 py-5">
-                    <ProblemCounts summary={application.problemSummary} />
                   </td>
                   <td className="px-5 py-5 text-right">
                     <a

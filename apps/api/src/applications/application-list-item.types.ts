@@ -4,12 +4,6 @@ import type {
   RiskBucket,
 } from './application.types';
 
-export interface ProblemSummary {
-  blocking: number;
-  warning: number;
-  info: number;
-}
-
 export interface ApplicationListItem {
   applicationId: string;
   companyName: string;
@@ -18,5 +12,4 @@ export interface ApplicationListItem {
   riskBucket: RiskBucket;
   globalScore: number;
   documentReviewStatus: DocumentReviewStatus;
-  problemSummary: ProblemSummary;
 }

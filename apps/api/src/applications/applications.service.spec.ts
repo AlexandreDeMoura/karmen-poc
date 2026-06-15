@@ -104,7 +104,6 @@ describe('ApplicationsService', () => {
         riskBucket: 'low',
         globalScore: 82,
         documentReviewStatus: 'complete',
-        problemSummary: { blocking: 0, warning: 0, info: 0 },
       },
       {
         applicationId: 'fr-002',
@@ -114,7 +113,6 @@ describe('ApplicationsService', () => {
         riskBucket: 'medium',
         globalScore: 58,
         documentReviewStatus: 'needs_action',
-        problemSummary: { blocking: 2, warning: 0, info: 0 },
       },
       {
         applicationId: 'fr-003',
@@ -124,7 +122,6 @@ describe('ApplicationsService', () => {
         riskBucket: 'high',
         globalScore: 34,
         documentReviewStatus: 'manual_review',
-        problemSummary: { blocking: 0, warning: 1, info: 1 },
       },
       {
         applicationId: 'fr-004',
@@ -134,7 +131,6 @@ describe('ApplicationsService', () => {
         riskBucket: 'medium',
         globalScore: 67,
         documentReviewStatus: 'needs_action',
-        problemSummary: { blocking: 2, warning: 1, info: 0 },
       },
     ]);
   });

@@ -73,7 +73,7 @@ function isDocumentReviewStatus(value: unknown): boolean {
 }
 
 function isApplicationListItem(value: unknown): value is ApplicationListItem {
-  if (!isRecord(value) || !isRecord(value.problemSummary)) {
+  if (!isRecord(value)) {
     return false
   }
 
@@ -84,10 +84,7 @@ function isApplicationListItem(value: unknown): value is ApplicationListItem {
     isFiniteNumber(value.requestedAmount) &&
     isRiskBucket(value.riskBucket) &&
     isFiniteNumber(value.globalScore) &&
-    isDocumentReviewStatus(value.documentReviewStatus) &&
-    isFiniteNumber(value.problemSummary.blocking) &&
-    isFiniteNumber(value.problemSummary.warning) &&
-    isFiniteNumber(value.problemSummary.info)
+    isDocumentReviewStatus(value.documentReviewStatus)
   )
 }
 

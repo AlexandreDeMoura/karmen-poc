@@ -1,16 +1,8 @@
-import type {
-  ProblemSummary,
-  RiskBucket,
-} from '../application.types'
+import type { RiskBucket } from '../application.types'
 
 interface BadgePresentation {
   label: string
   className: string
-}
-
-interface ProblemPresentation extends BadgePresentation {
-  key: keyof ProblemSummary
-  shortLabel: string
 }
 
 export const riskPresentation: Record<
@@ -30,24 +22,3 @@ export const riskPresentation: Record<
     className: 'bg-rose-50 text-rose-800 ring-rose-600/20',
   },
 }
-
-export const problemPresentation: readonly ProblemPresentation[] = [
-  {
-    key: 'blocking',
-    label: 'blocking',
-    shortLabel: 'Blocking',
-    className: 'bg-rose-50 text-rose-800',
-  },
-  {
-    key: 'warning',
-    label: 'warnings',
-    shortLabel: 'Warning',
-    className: 'bg-amber-50 text-amber-900',
-  },
-  {
-    key: 'info',
-    label: 'information',
-    shortLabel: 'Info',
-    className: 'bg-sky-50 text-sky-800',
-  },
-]
