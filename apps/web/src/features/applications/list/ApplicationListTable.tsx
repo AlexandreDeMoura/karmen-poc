@@ -1,69 +1,18 @@
 import { ReviewStatusBadge } from '../shared/ReviewStatusBadge'
 import type {
   ApplicationListItem,
-  FinancingType,
   ProblemSummary,
   RiskBucket,
 } from '../application.types'
-
-const amountFormatter = new Intl.NumberFormat('fr-FR', {
-  style: 'currency',
-  currency: 'EUR',
-  maximumFractionDigits: 0,
-})
-
-const financingTypeLabels: Record<FinancingType, string> = {
-  loan: 'Loan',
-  factoring: 'Factoring',
-}
-
-const riskPresentation: Record<
-  RiskBucket,
-  { label: string; className: string }
-> = {
-  low: {
-    label: 'Low',
-    className: 'bg-emerald-50 text-emerald-800 ring-emerald-600/20',
-  },
-  medium: {
-    label: 'Medium',
-    className: 'bg-amber-50 text-amber-900 ring-amber-600/20',
-  },
-  high: {
-    label: 'High',
-    className: 'bg-rose-50 text-rose-800 ring-rose-600/20',
-  },
-}
-
-const problemPresentation: Array<{
-  key: keyof ProblemSummary
-  label: string
-  shortLabel: string
-  className: string
-}> = [
-  {
-    key: 'blocking',
-    label: 'blocking',
-    shortLabel: 'Blocking',
-    className: 'bg-rose-50 text-rose-800',
-  },
-  {
-    key: 'warning',
-    label: 'warnings',
-    shortLabel: 'Warning',
-    className: 'bg-amber-50 text-amber-900',
-  },
-  {
-    key: 'info',
-    label: 'information',
-    shortLabel: 'Info',
-    className: 'bg-sky-50 text-sky-800',
-  },
-]
-
-function getApplicationPath(applicationId: string) {
-  return `/applications/${encodeURIComponent(applicationId)}`
-}
+import {
+  financingTypeLabels,
+  formatAmount,
+} from '../application.presentation'
+import { getApplicationPath } from '../applications.routes'
+import {
+  problemPresentation,
+  riskPresentation,
+} from './list.presentation'
 
 interface ApplicationListTableProps {
   applications: ApplicationListItem[]
@@ -137,7 +86,7 @@ function ApplicationCards({ applications }: ApplicationListTableProps) {
             <div>
               <dt className="text-slate-500">Amount</dt>
               <dd className="mt-1 font-semibold text-slate-950">
-                {amountFormatter.format(application.requestedAmount)}
+                {formatAmount(application.requestedAmount)}
               </dd>
             </div>
             <div>
@@ -232,7 +181,7 @@ export function ApplicationListTable({
                     {financingTypeLabels[application.financingType]}
                   </td>
                   <td className="px-4 py-5 text-sm font-semibold whitespace-nowrap text-slate-950">
-                    {amountFormatter.format(application.requestedAmount)}
+                    {formatAmount(application.requestedAmount)}
                   </td>
                   <td className="px-4 py-5">
                     <RiskBadge riskBucket={application.riskBucket} />

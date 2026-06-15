@@ -14,6 +14,10 @@ import type {
   DocumentDiagnostic,
 } from '../application.types'
 import {
+  financingTypeLabels,
+  formatAmount,
+} from '../application.presentation'
+import {
   changeProblemSelection,
   createProblemSelection,
   getDiagnosticSignals,
@@ -22,8 +26,6 @@ import {
 } from './detail.logic'
 import {
   extractionStatusPresentation,
-  financingTypeLabels,
-  formatAmount,
   formatDate,
   formatInterestRate,
   formatRequestStatus,

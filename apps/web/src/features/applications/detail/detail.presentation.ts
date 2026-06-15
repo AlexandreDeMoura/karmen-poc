@@ -1,6 +1,5 @@
 import type {
   ExtractionStatus,
-  FinancingType,
   ProblemSeverity,
   ProblemSource,
   RiskBucket,
@@ -10,12 +9,6 @@ interface BadgePresentation {
   label: string
   className: string
 }
-
-const amountFormatter = new Intl.NumberFormat('fr-FR', {
-  style: 'currency',
-  currency: 'EUR',
-  maximumFractionDigits: 0,
-})
 
 const rateFormatter = new Intl.NumberFormat('en-GB', {
   maximumFractionDigits: 2,
@@ -27,11 +20,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
   timeZone: 'UTC',
 })
-
-export const financingTypeLabels: Record<FinancingType, string> = {
-  loan: 'Loan',
-  factoring: 'Factoring',
-}
 
 export const riskPresentation: Record<RiskBucket, BadgePresentation> = {
   low: {
@@ -88,10 +76,6 @@ export const problemSourceLabels: Record<ProblemSource, string> = {
   requirements_engine: 'Requirements engine',
   mocked_document_diagnostic: 'Mocked document diagnostic',
   score_context: 'Score context',
-}
-
-export function formatAmount(value: number): string {
-  return amountFormatter.format(value)
 }
 
 export function formatInterestRate(value: number): string {
