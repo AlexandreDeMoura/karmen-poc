@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ProblemChecklist } from './ProblemChecklist'
 import { ReviewStatusBadge } from './ReviewStatusBadge'
 import type {
   ApplicationDocument,
@@ -541,6 +542,14 @@ interface ApplicationDetailProps {
 }
 
 function ApplicationDetail({ review }: ApplicationDetailProps) {
+  const [selectedProblemIds, setSelectedProblemIds] = useState<Set<string>>(
+    () =>
+      new Set(
+        review.problems
+          .filter((problem) => problem.selectedByDefault)
+          .map((problem) => problem.id),
+      ),
+  )
   const taxReturns = review.documents.filter(
     (document) => document.type === 'liasse_fiscale',
   )
@@ -553,6 +562,19 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
       diagnostic,
     ]),
   )
+  const updateProblemSelection = (problemId: string, selected: boolean) => {
+    setSelectedProblemIds((currentProblemIds) => {
+      const nextProblemIds = new Set(currentProblemIds)
+
+      if (selected) {
+        nextProblemIds.add(problemId)
+      } else {
+        nextProblemIds.delete(problemId)
+      }
+
+      return nextProblemIds
+    })
+  }
 
   return (
     <>
@@ -677,6 +699,12 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
           />
         </div>
       </section>
+
+      <ProblemChecklist
+        onSelectionChange={updateProblemSelection}
+        problems={review.problems}
+        selectedProblemIds={selectedProblemIds}
+      />
     </>
   )
 }
