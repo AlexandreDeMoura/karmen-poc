@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { EmailAssistantPanel } from './EmailAssistantPanel'
 import { ProblemChecklist } from './ProblemChecklist'
 import { ReviewStatusBadge } from './ReviewStatusBadge'
 import type {
@@ -550,6 +551,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
           .map((problem) => problem.id),
       ),
   )
+  const [selectionRevision, setSelectionRevision] = useState(0)
   const taxReturns = review.documents.filter(
     (document) => document.type === 'liasse_fiscale',
   )
@@ -574,6 +576,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
 
       return nextProblemIds
     })
+    setSelectionRevision((revision) => revision + 1)
   }
 
   return (
@@ -704,6 +707,13 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         onSelectionChange={updateProblemSelection}
         problems={review.problems}
         selectedProblemIds={selectedProblemIds}
+      />
+
+      <EmailAssistantPanel
+        applicationId={review.applicationId}
+        problems={review.problems}
+        selectedProblemIds={selectedProblemIds}
+        selectionRevision={selectionRevision}
       />
     </>
   )
