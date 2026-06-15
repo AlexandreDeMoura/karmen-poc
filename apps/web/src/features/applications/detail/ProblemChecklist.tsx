@@ -1,32 +1,12 @@
-import type {
-  DocumentProblem,
-  ProblemSeverity,
-  ProblemSource,
-} from '../application.types'
-
-const severityPresentation: Record<
-  ProblemSeverity,
-  { label: string; className: string }
-> = {
-  blocking: {
-    label: 'Blocking',
-    className: 'border-rose-200 bg-rose-50 text-rose-800',
-  },
-  warning: {
-    label: 'Warning',
-    className: 'border-amber-200 bg-amber-50 text-amber-900',
-  },
-  info: {
-    label: 'Information',
-    className: 'border-sky-200 bg-sky-50 text-sky-800',
-  },
-}
-
-const sourceLabels: Record<ProblemSource, string> = {
-  requirements_engine: 'Requirements engine',
-  mocked_document_diagnostic: 'Mocked document diagnostic',
-  score_context: 'Score context',
-}
+import type { DocumentProblem } from '../application.types'
+import {
+  countSelectedProblems,
+  groupProblems,
+} from './detail.logic'
+import {
+  problemSourceLabels,
+  severityPresentation,
+} from './detail.presentation'
 
 interface ProblemChecklistProps {
   problems: DocumentProblem[]
@@ -85,7 +65,7 @@ function ProblemCard({
                 {severity.label}
               </span>
               <span className="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
-                {sourceLabels[problem.source]}
+                {problemSourceLabels[problem.source]}
               </span>
               {!problem.clientFacing && (
                 <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
@@ -134,9 +114,10 @@ function ProblemGroup({
   selectedProblemIds,
   onSelectionChange,
 }: ProblemGroupProps) {
-  const selectedCount = problems.filter((problem) =>
-    selectedProblemIds.has(problem.id),
-  ).length
+  const selectedCount = countSelectedProblems(
+    problems,
+    selectedProblemIds,
+  )
 
   return (
     <fieldset>
@@ -173,15 +154,13 @@ export function ProblemChecklist({
   selectedProblemIds,
   onSelectionChange,
 }: ProblemChecklistProps) {
-  const clientFacingProblems = problems.filter(
-    (problem) => problem.clientFacing,
+  const { clientFacingProblems, analystOnlyProblems } = groupProblems(
+    problems,
   )
-  const analystOnlyProblems = problems.filter(
-    (problem) => !problem.clientFacing,
+  const selectedClientFacingCount = countSelectedProblems(
+    clientFacingProblems,
+    selectedProblemIds,
   )
-  const selectedClientFacingCount = clientFacingProblems.filter((problem) =>
-    selectedProblemIds.has(problem.id),
-  ).length
   const hasSelectedClientFacingProblem = selectedClientFacingCount > 0
 
   return (

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DocumentProblem, EmailPreview } from '../application.types'
 import { generateEmailPreview } from '../applications.api'
+import { getSelectedClientFacingProblems } from './detail.logic'
 
 interface EmailAssistantPanelProps {
   applicationId: string
@@ -38,12 +39,11 @@ export function EmailAssistantPanel({
   const activeRequestRef = useRef<AbortController | null>(null)
   const requestTokenRef = useRef(0)
 
-  const selectedProblems = problems.filter((problem) =>
-    selectedProblemIds.has(problem.id),
+  const selectedClientFacingProblems = getSelectedClientFacingProblems(
+    problems,
+    selectedProblemIds,
   )
-  const selectedClientFacingCount = selectedProblems.filter(
-    (problem) => problem.clientFacing,
-  ).length
+  const selectedClientFacingCount = selectedClientFacingProblems.length
   const hasSelectedClientFacingProblem = selectedClientFacingCount > 0
   const isGenerating =
     requestState.status === 'loading' &&
@@ -88,7 +88,7 @@ export function EmailAssistantPanel({
     try {
       const generatedPreview = await generateEmailPreview(
         applicationId,
-        selectedProblems.map((problem) => problem.id),
+        selectedClientFacingProblems.map((problem) => problem.id),
         controller.signal,
       )
 

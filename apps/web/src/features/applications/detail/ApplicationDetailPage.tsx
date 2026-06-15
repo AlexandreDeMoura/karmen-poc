@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { EmailAssistantPanel } from './EmailAssistantPanel'
 import { ProblemChecklist } from './ProblemChecklist'
 import { ReviewStatusBadge } from '../shared/ReviewStatusBadge'
@@ -6,80 +12,28 @@ import type {
   ApplicationDocument,
   ApplicationReview,
   DocumentDiagnostic,
-  ExtractionStatus,
-  FinancingType,
-  RiskBucket,
 } from '../application.types'
 import {
-  ApplicationsApiError,
-  fetchApplicationReview,
-} from '../applications.api'
+  changeProblemSelection,
+  createProblemSelection,
+  getDiagnosticSignals,
+  groupDocuments,
+  indexDiagnosticsByDocumentId,
+} from './detail.logic'
+import {
+  extractionStatusPresentation,
+  financingTypeLabels,
+  formatAmount,
+  formatDate,
+  formatInterestRate,
+  formatRequestStatus,
+  maskAccount,
+  riskPresentation,
+} from './detail.presentation'
+import { useApplicationReview } from './useApplicationReview'
 
 interface ApplicationDetailPageProps {
   applicationId: string
-}
-
-type ApplicationDetailState =
-  | { status: 'loading' }
-  | { status: 'success'; review: ApplicationReview }
-  | { status: 'error'; message: string; notFound: boolean }
-
-const amountFormatter = new Intl.NumberFormat('fr-FR', {
-  style: 'currency',
-  currency: 'EUR',
-  maximumFractionDigits: 0,
-})
-
-const rateFormatter = new Intl.NumberFormat('en-GB', {
-  maximumFractionDigits: 2,
-})
-
-const dateFormatter = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
-
-const financingTypeLabels: Record<FinancingType, string> = {
-  loan: 'Loan',
-  factoring: 'Factoring',
-}
-
-const riskPresentation: Record<
-  RiskBucket,
-  { label: string; className: string }
-> = {
-  low: {
-    label: 'Low risk',
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  },
-  medium: {
-    label: 'Medium risk',
-    className: 'border-amber-200 bg-amber-50 text-amber-900',
-  },
-  high: {
-    label: 'High risk',
-    className: 'border-rose-200 bg-rose-50 text-rose-800',
-  },
-}
-
-const extractionStatusPresentation: Record<
-  ExtractionStatus,
-  { label: string; className: string }
-> = {
-  success: {
-    label: 'Extraction succeeded',
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  },
-  partial_success: {
-    label: 'Partial extraction',
-    className: 'border-amber-200 bg-amber-50 text-amber-900',
-  },
-  failed: {
-    label: 'Extraction failed',
-    className: 'border-rose-200 bg-rose-50 text-rose-800',
-  },
 }
 
 function PageHeader() {
@@ -244,33 +198,6 @@ function SummaryCard({ eyebrow, title, children }: SummaryCardProps) {
   )
 }
 
-function formatDate(value: string): string {
-  const date = new Date(`${value}T00:00:00Z`)
-  return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date)
-}
-
-function formatRequestStatus(value: string): string {
-  return value
-    .split('_')
-    .filter(Boolean)
-    .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
-    .join(' ')
-}
-
-function maskAccount(account?: string): string {
-  if (!account) {
-    return 'Not specified'
-  }
-
-  const normalizedAccount = account.replace(/\s+/g, '')
-
-  if (normalizedAccount.length <= 4) {
-    return `**** ${normalizedAccount}`
-  }
-
-  return `${normalizedAccount.slice(0, 4)} **** ${normalizedAccount.slice(-4)}`
-}
-
 interface ScoreContextProps {
   review: ApplicationReview
 }
@@ -345,44 +272,6 @@ function RequirementsSummary({ review }: RequirementsSummaryProps) {
       </div>
     </SummaryCard>
   )
-}
-
-function getDiagnosticSignals(diagnostic: DocumentDiagnostic): string[] {
-  const signals: string[] = []
-
-  if (diagnostic.pdfPrecheck?.hasTextLayer === false) {
-    signals.push('No text layer detected')
-  }
-
-  if (diagnostic.pdfPrecheck?.likelyScannedPdf === true) {
-    signals.push('Likely scanned PDF')
-  }
-
-  if (diagnostic.pdfPrecheck?.isPasswordProtected === true) {
-    signals.push('Password protection detected')
-  }
-
-  if (diagnostic.pdfPrecheck?.isCorrupted === true) {
-    signals.push('File may be corrupted')
-  }
-
-  if (diagnostic.qualitySignals?.lowResolution === true) {
-    signals.push('Low resolution')
-  }
-
-  if (diagnostic.qualitySignals?.blurDetected === true) {
-    signals.push('Blur detected')
-  }
-
-  if (diagnostic.qualitySignals?.croppedPageDetected === true) {
-    signals.push('Cropped page detected')
-  }
-
-  if (diagnostic.qualitySignals?.skewDetected === true) {
-    signals.push('Page skew detected')
-  }
-
-  return signals
 }
 
 interface DiagnosticPanelProps {
@@ -634,42 +523,23 @@ interface ApplicationDetailProps {
 }
 
 function ApplicationDetail({ review }: ApplicationDetailProps) {
-  const [selectedProblemIds, setSelectedProblemIds] = useState<Set<string>>(
-    () =>
-      new Set(
-        review.problems
-          .filter((problem) => problem.selectedByDefault)
-          .map((problem) => problem.id),
-      ),
+  const [problemSelection, setProblemSelection] = useState(() =>
+    createProblemSelection(review.problems),
   )
-  const [selectionRevision, setSelectionRevision] = useState(0)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const closePanel = useCallback(() => setIsPanelOpen(false), [])
-  const taxReturns = review.documents.filter(
-    (document) => document.type === 'liasse_fiscale',
+  const { taxReturns, bankStatements } = useMemo(
+    () => groupDocuments(review.documents),
+    [review.documents],
   )
-  const bankStatements = review.documents.filter(
-    (document) => document.type === 'releve_bancaire',
-  )
-  const diagnosticsByDocumentId = new Map(
-    review.diagnostics.map((diagnostic) => [
-      diagnostic.documentId,
-      diagnostic,
-    ]),
+  const diagnosticsByDocumentId = useMemo(
+    () => indexDiagnosticsByDocumentId(review.diagnostics),
+    [review.diagnostics],
   )
   const updateProblemSelection = (problemId: string, selected: boolean) => {
-    setSelectedProblemIds((currentProblemIds) => {
-      const nextProblemIds = new Set(currentProblemIds)
-
-      if (selected) {
-        nextProblemIds.add(problemId)
-      } else {
-        nextProblemIds.delete(problemId)
-      }
-
-      return nextProblemIds
-    })
-    setSelectionRevision((revision) => revision + 1)
+    setProblemSelection((currentSelection) =>
+      changeProblemSelection(currentSelection, problemId, selected),
+    )
   }
 
   return (
@@ -726,7 +596,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
             items={[
               {
                 label: 'Amount',
-                value: amountFormatter.format(review.financingRequest.amount),
+                value: formatAmount(review.financingRequest.amount),
               },
               {
                 label: 'Financing type',
@@ -742,7 +612,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
               },
               {
                 label: 'Interest rate',
-                value: `${rateFormatter.format(review.financingRequest.interestRate)}% annual`,
+                value: `${formatInterestRate(review.financingRequest.interestRate)}% annual`,
               },
               {
                 label: 'Request status',
@@ -822,14 +692,14 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         <ProblemChecklist
           onSelectionChange={updateProblemSelection}
           problems={review.problems}
-          selectedProblemIds={selectedProblemIds}
+          selectedProblemIds={problemSelection.selectedProblemIds}
         />
 
         <EmailAssistantPanel
           applicationId={review.applicationId}
           problems={review.problems}
-          selectedProblemIds={selectedProblemIds}
-          selectionRevision={selectionRevision}
+          selectedProblemIds={problemSelection.selectedProblemIds}
+          selectionRevision={problemSelection.revision}
         />
       </ReviewDrawer>
     </>
@@ -839,41 +709,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
 export function ApplicationDetailPage({
   applicationId,
 }: ApplicationDetailPageProps) {
-  const [requestVersion, setRequestVersion] = useState(0)
-  const [state, setState] = useState<ApplicationDetailState>({
-    status: 'loading',
-  })
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    fetchApplicationReview(applicationId, controller.signal)
-      .then((review) => {
-        setState({ status: 'success', review })
-      })
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) {
-          return
-        }
-
-        setState({
-          status: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'An unknown request error occurred.',
-          notFound:
-            error instanceof ApplicationsApiError && error.status === 404,
-        })
-      })
-
-    return () => controller.abort()
-  }, [applicationId, requestVersion])
-
-  const retry = () => {
-    setState({ status: 'loading' })
-    setRequestVersion((version) => version + 1)
-  }
+  const { state, retry } = useApplicationReview(applicationId)
 
   return (
     <div className="min-h-screen">
