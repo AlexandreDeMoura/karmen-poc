@@ -1,0 +1,37 @@
+{
+  "company": {
+    "id": "c-004",
+    "name": "Fleurs de Saison",
+    "siren": "845612378",
+    "businessType": "Fleuriste",
+    "legalCategory": "EURL",
+    "codeNaf": "4776Z",
+    "creationDate": "2020-02-10",
+    "address": "24 avenue Jean Jaurès, Lyon",
+    "countryCode": "FR",
+    "postalCode": "69007",
+    "owner": "Sophie Martin"
+  },
+  "financing_request": {
+    "id": "fr-004",
+    "type": "factoring",
+    "status": "pending_review",
+    "company_id": "c-004",
+    "fundUsage": "Stock saisonnier (fêtes de fin d'année)",
+    "rejectedReason": null,
+    "amount": 12000,
+    "durationInMonth": 9,
+    "interestRate": 4.5
+  },
+  "documents": [
+    { "id": "d-010", "name": "Liasse fiscale 2023", "type": "liasse_fiscale", "company_id": "c-004", "financing_request_id": "fr-004", "metadata": { "year": 2023 } },
+    { "id": "d-011", "name": "Liasse fiscale 2024", "type": "liasse_fiscale", "company_id": "c-004", "financing_request_id": "fr-004", "metadata": { "year": 2024 } },
+    { "id": "d-012", "name": "Relevés LCL janv-oct 2024", "type": "releve_bancaire", "company_id": "c-004", "financing_request_id": "fr-004", "metadata": { "bank": "LCL", "account": "FR7630002000001", "months_covered": 10 } }
+  ],
+  "score": {
+    "id": "s-004",
+    "financing_request_id": "fr-004",
+    "risk_bucket": "medium",
+    "global_score": 67
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "company": {
+    "id": "c-003",
+    "name": "Transport Leclerc Express",
+    "siren": "756789012",
+    "businessType": "Transport routier",
+    "legalCategory": "SA",
+    "codeNaf": "4941A",
+    "creationDate": "2015-06-20",
+    "address": "ZI Les Platanes, Creil",
+    "countryCode": "FR",
+    "postalCode": "60100",
+    "owner": "Jean-Marc Leclerc"
+  },
+  "financing_request": {
+    "id": "fr-003",
+    "type": "loan",
+    "status": "pending_review",
+    "company_id": "c-003",
+    "fundUsage": "Renouvellement flotte véhicules",
+    "rejectedReason": null,
+    "amount": 75000,
+    "durationInMonth": 18,
+    "interestRate": 7.8
+  },
+  "documents": [
+    { "id": "d-006", "name": "Liasse fiscale 2023", "type": "liasse_fiscale", "company_id": "c-003", "financing_request_id": "fr-003", "metadata": { "year": 2023 } },
+    { "id": "d-007", "name": "Liasse fiscale 2024", "type": "liasse_fiscale", "company_id": "c-003", "financing_request_id": "fr-003", "metadata": { "year": 2024 } },
+    { "id": "d-008", "name": "Relevés SG janv-déc 2024", "type": "releve_bancaire", "company_id": "c-003", "financing_request_id": "fr-003", "metadata": { "bank": "Société Générale", "account": "FR7620041000001", "months_covered": 12 } },
+    { "id": "d-009", "name": "Relevés BNP janv-déc 2024", "type": "releve_bancaire", "company_id": "c-003", "financing_request_id": "fr-003", "metadata": { "bank": "BNP Paribas", "account": "FR7630004000002", "months_covered": 12 } }
+  ],
+  "score": {
+    "id": "s-003",
+    "financing_request_id": "fr-003",
+    "risk_bucket": "high",
+    "global_score": 34
+  }
+}

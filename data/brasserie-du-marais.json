@@ -1,0 +1,37 @@
+{
+  "company": {
+    "id": "c-001",
+    "name": "Brasserie du Marais",
+    "siren": "823456789",
+    "businessType": "Restaurant",
+    "legalCategory": "SARL",
+    "codeNaf": "5610A",
+    "creationDate": "2018-03-15",
+    "address": "12 rue des Archives, Paris",
+    "countryCode": "FR",
+    "postalCode": "75003",
+    "owner": "Marie Dupont"
+  },
+  "financing_request": {
+    "id": "fr-001",
+    "type": "loan",
+    "status": "pending_review",
+    "company_id": "c-001",
+    "fundUsage": "Achat équipement cuisine",
+    "rejectedReason": null,
+    "amount": 35000,
+    "durationInMonth": 12,
+    "interestRate": 5.2
+  },
+  "documents": [
+    { "id": "d-001", "name": "Liasse fiscale 2023", "type": "liasse_fiscale", "company_id": "c-001", "financing_request_id": "fr-001", "metadata": { "year": 2023 } },
+    { "id": "d-002", "name": "Liasse fiscale 2024", "type": "liasse_fiscale", "company_id": "c-001", "financing_request_id": "fr-001", "metadata": { "year": 2024 } },
+    { "id": "d-003", "name": "Relevés Crédit Agricole janv-déc 2024", "type": "releve_bancaire", "company_id": "c-001", "financing_request_id": "fr-001", "metadata": { "bank": "Crédit Agricole", "account": "FR7612345000001", "months_covered": 12 } }
+  ],
+  "score": {
+    "id": "s-001",
+    "financing_request_id": "fr-001",
+    "risk_bucket": "low",
+    "global_score": 82
+  }
+}

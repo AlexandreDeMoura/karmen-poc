@@ -1,0 +1,36 @@
+{
+  "company": {
+    "id": "c-002",
+    "name": "Studio Pixel",
+    "siren": "912345678",
+    "businessType": "Agence digitale",
+    "legalCategory": "SAS",
+    "codeNaf": "6201Z",
+    "creationDate": "2021-09-01",
+    "address": "8 rue de la Roquette, Paris",
+    "countryCode": "FR",
+    "postalCode": "75011",
+    "owner": "Thomas Renard"
+  },
+  "financing_request": {
+    "id": "fr-002",
+    "type": "loan",
+    "status": "pending_review",
+    "company_id": "c-002",
+    "fundUsage": "Trésorerie",
+    "rejectedReason": null,
+    "amount": 20000,
+    "durationInMonth": 6,
+    "interestRate": 6.1
+  },
+  "documents": [
+    { "id": "d-004", "name": "Liasse fiscale 2024", "type": "liasse_fiscale", "company_id": "c-002", "financing_request_id": "fr-002", "metadata": { "year": 2024 } },
+    { "id": "d-005", "name": "Relevés BNP mars-août 2024", "type": "releve_bancaire", "company_id": "c-002", "financing_request_id": "fr-002", "metadata": { "bank": "BNP Paribas", "account": "FR7630004000001", "months_covered": 6 } }
+  ],
+  "score": {
+    "id": "s-002",
+    "financing_request_id": "fr-002",
+    "risk_bucket": "medium",
+    "global_score": 58
+  }
+}
