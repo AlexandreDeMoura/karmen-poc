@@ -313,11 +313,12 @@ UI behavior and appearance will be manually QA'd by the user.
 
 ## Current State
 
-Tasks 1 and 2 are complete: the four fixtures are in root `data/`, and
-`apps/api/src/applications/` now defines the full fixture input types separately
-from the smaller `ApplicationListItem` API response contract. The backend build
-and lint checks pass, so Task 3 can implement runtime loading and validation
-against these types.
+Tasks 1 through 4 are complete: the four fixtures and backend contracts are in
+place, the API can load and cache the expected runtime JSON files with
+lightweight validation, and the list review-summary rules produce deterministic
+problem counts and statuses. Loader and summary unit tests, the backend build,
+and production-source lint checks pass, so Task 5 can expose
+`GET /applications`.
 
 ## Implementation Order
 
