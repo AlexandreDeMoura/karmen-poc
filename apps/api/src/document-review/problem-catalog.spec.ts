@@ -35,12 +35,24 @@ describe('PROBLEM_CATALOG', () => {
     expect(missingTaxReturn.buildEmailFragment?.({ year: 2023 })).toBe(
       'the tax return for fiscal year 2023',
     );
+    expect(missingTaxReturn.buildDescription({ year: 2023 })).toBe(
+      'No tax return was received for fiscal year 2023.',
+    );
     expect(
       missingBankMonths.buildClientFacingLabel?.({
         detectedMonths: 6,
         expectedMonths: 12,
       }),
     ).toBe('Bank statements cover 6/12 required months');
+    expect(
+      missingBankMonths.buildDescription({
+        account: 'FR761234',
+        detectedMonths: 6,
+        expectedMonths: 12,
+      }),
+    ).toBe(
+      'Bank statements for account FR761234 cover 6 of 12 required months.',
+    );
   });
 
   it('keeps analyst-only problems out of client selection', () => {

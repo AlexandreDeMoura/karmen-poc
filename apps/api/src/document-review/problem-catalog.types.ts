@@ -9,6 +9,7 @@ export interface ProblemCatalogEntry {
   selectedByDefault: boolean;
   analystLabel: string;
   recommendedAction: string;
+  buildDescription: (metadata: ProblemCatalogMetadata) => string;
   buildClientFacingLabel?: (metadata: ProblemCatalogMetadata) => string;
   buildEmailFragment?: (metadata: ProblemCatalogMetadata) => string;
 }
