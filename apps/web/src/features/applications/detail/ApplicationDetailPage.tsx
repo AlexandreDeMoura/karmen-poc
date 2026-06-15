@@ -51,11 +51,11 @@ function PageHeader() {
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-950">Karmen</p>
-            <p className="text-xs text-slate-500">Credit operations</p>
+            <p className="text-xs text-slate-500">Opérations de crédit</p>
           </div>
         </div>
         <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-          Document readiness
+          Suivi documentaire
         </span>
       </div>
     </header>
@@ -68,7 +68,7 @@ function BackLink() {
       className="inline-flex text-sm font-semibold text-slate-600 transition hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
       href="/"
     >
-      &larr; Back to applications
+      &larr; Retour aux demandes
     </a>
   )
 }
@@ -76,7 +76,7 @@ function BackLink() {
 function LoadingState() {
   return (
     <div aria-busy="true" aria-live="polite">
-      <p className="sr-only">Loading application review...</p>
+      <p className="sr-only">Chargement du contrôle de la demande...</p>
 
       <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="h-2 animate-pulse bg-slate-200" />
@@ -135,17 +135,17 @@ function ErrorState({
         !
       </div>
       <p className="mt-5 text-xs font-semibold tracking-widest text-rose-700 uppercase">
-        {notFound ? 'Application not found' : 'Request failed'}
+        {notFound ? 'Demande introuvable' : 'Échec de la requête'}
       </p>
       <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
         {notFound
-          ? `No review is available for ${applicationId}`
-          : 'The application review could not be loaded'}
+          ? `Aucun contrôle n’est disponible pour ${applicationId}`
+          : 'Impossible de charger le contrôle de la demande'}
       </h1>
       <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
         {notFound
-          ? 'The financing request may no longer exist or the link may be incorrect.'
-          : 'Check that the API is running, then retry the request.'}
+          ? 'La demande de financement n’existe peut-être plus ou le lien est incorrect.'
+          : 'Vérifiez que l’API est démarrée, puis relancez la requête.'}
       </p>
       <p className="mx-auto mt-2 max-w-xl text-xs text-slate-500">{message}</p>
       <button
@@ -153,7 +153,7 @@ function ErrorState({
         onClick={onRetry}
         type="button"
       >
-        Retry request
+        Réessayer
       </button>
     </div>
   )
@@ -208,13 +208,13 @@ function ScoreContext({ review }: ScoreContextProps) {
   const risk = riskPresentation[review.score.risk_bucket]
 
   return (
-    <SummaryCard eyebrow="Context only" title="Score context">
+    <SummaryCard eyebrow="Pour information" title="Contexte du score">
       <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
         <div className="flex size-24 shrink-0 flex-col items-center justify-center rounded-2xl bg-slate-950 text-white">
           <span className="text-3xl font-semibold">
             {review.score.global_score}
           </span>
-          <span className="mt-1 text-xs text-slate-300">out of 100</span>
+          <span className="mt-1 text-xs text-slate-300">sur 100</span>
         </div>
         <div>
           <span
@@ -223,8 +223,8 @@ function ScoreContext({ review }: ScoreContextProps) {
             {risk.label}
           </span>
           <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
-            The score and risk bucket provide analyst context. They do not
-            decide whether the document set is ready.
+            Le score et le niveau de risque apportent du contexte à l’analyste.
+            Ils ne déterminent pas si le dossier documentaire est complet.
           </p>
         </div>
       </div>
@@ -238,12 +238,14 @@ interface RequirementsSummaryProps {
 
 function RequirementsSummary({ review }: RequirementsSummaryProps) {
   return (
-    <SummaryCard eyebrow="Expected documents" title="Readiness requirements">
+    <SummaryCard eyebrow="Documents attendus" title="Exigences documentaires">
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <p className="text-sm font-semibold text-slate-950">Tax returns</p>
+          <p className="text-sm font-semibold text-slate-950">
+            Liasses fiscales
+          </p>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            One fiscal return is expected for each required year.
+            Une liasse fiscale est attendue pour chaque exercice requis.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {review.requirements.expectedTaxReturnYears.map((year) => (
@@ -259,15 +261,16 @@ function RequirementsSummary({ review }: RequirementsSummaryProps) {
 
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-sm font-semibold text-slate-950">
-            Bank statements
+            Relevés bancaires
           </p>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            Coverage is required for every detected bank account.
+            La période requise doit être couverte pour chaque compte bancaire
+            détecté.
           </p>
           <p className="mt-4 text-2xl font-semibold text-slate-950">
             {review.requirements.expectedBankStatementMonths}
             <span className="ml-2 text-sm font-medium text-slate-500">
-              months per account
+              mois par compte
             </span>
           </p>
         </div>
@@ -288,7 +291,7 @@ function DiagnosticPanel({ diagnostic }: DiagnosticPanelProps) {
     <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/70 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs font-semibold tracking-wide text-amber-950 uppercase">
-          Mocked pipeline diagnostic
+          Diagnostic simulé du traitement
         </p>
         <span
           className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${status.className}`}
@@ -298,7 +301,10 @@ function DiagnosticPanel({ diagnostic }: DiagnosticPanelProps) {
       </div>
 
       {signals.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label="Precheck signals">
+        <ul
+          className="mt-3 flex flex-wrap gap-2"
+          aria-label="Signaux de précontrôle"
+        >
           {signals.map((signal) => (
             <li
               key={signal}
@@ -311,8 +317,8 @@ function DiagnosticPanel({ diagnostic }: DiagnosticPanelProps) {
       )}
 
       <p className="mt-3 text-xs leading-5 text-amber-900">
-        This is a simulated document-pipeline signal for the POC, not a
-        browser-side PDF inspection.
+        Il s’agit d’un signal simulé pour cette preuve de concept, et non d’une
+        analyse du PDF effectuée dans le navigateur.
       </p>
     </div>
   )
@@ -333,7 +339,7 @@ function DocumentCard({ document, diagnostic }: DocumentCardProps) {
           aria-hidden="true"
           className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-600"
         >
-          {isTaxReturn ? 'TAX' : 'BANK'}
+          {isTaxReturn ? 'FISC' : 'BANQ'}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -342,12 +348,13 @@ function DocumentCard({ document, diagnostic }: DocumentCardProps) {
                 {document.name}
               </h4>
               <p className="mt-1 text-xs text-slate-500">
-                {isTaxReturn ? 'Tax return' : 'Bank statement'} / {document.id}
+                {isTaxReturn ? 'Liasse fiscale' : 'Relevé bancaire'} /{' '}
+                {document.id}
               </p>
             </div>
             {isTaxReturn && document.metadata.year !== undefined && (
               <span className="w-fit rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                Fiscal year {document.metadata.year}
+                Exercice {document.metadata.year}
               </span>
             )}
           </div>
@@ -355,24 +362,21 @@ function DocumentCard({ document, diagnostic }: DocumentCardProps) {
           {!isTaxReturn && (
             <dl className="mt-4 grid gap-4 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
               <div>
-                <dt className="text-xs text-slate-500">Bank</dt>
+                <dt className="text-xs text-slate-500">Banque</dt>
                 <dd className="mt-1 font-medium text-slate-900">
-                  {document.metadata.bank ?? 'Not specified'}
+                  {document.metadata.bank ?? 'Non renseignée'}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-slate-500">Account</dt>
+                <dt className="text-xs text-slate-500">Compte</dt>
                 <dd className="mt-1 font-mono text-xs font-semibold text-slate-900">
                   {maskAccount(document.metadata.account)}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-slate-500">Coverage</dt>
+                <dt className="text-xs text-slate-500">Période couverte</dt>
                 <dd className="mt-1 font-medium text-slate-900">
-                  {document.metadata.months_covered ?? 0}{' '}
-                  {(document.metadata.months_covered ?? 0) === 1
-                    ? 'month'
-                    : 'months'}
+                  {document.metadata.months_covered ?? 0} mois
                 </dd>
               </div>
             </dl>
@@ -406,7 +410,7 @@ function DocumentGroup({
           <p className="mt-1 text-sm text-slate-500">{description}</p>
         </div>
         <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
-          {documents.length} {documents.length === 1 ? 'file' : 'files'}
+          {documents.length} {documents.length === 1 ? 'fichier' : 'fichiers'}
         </span>
       </div>
 
@@ -422,7 +426,7 @@ function DocumentGroup({
         </ul>
       ) : (
         <p className="mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-600">
-          No documents received in this category.
+          Aucun document reçu dans cette catégorie.
         </p>
       )}
     </section>
@@ -492,7 +496,7 @@ function ReviewDrawer({
         <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-6 py-5">
           <div>
             <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-              Analyst workspace
+              Espace analyste
             </p>
             <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
               {title}
@@ -502,7 +506,7 @@ function ReviewDrawer({
             </p>
           </div>
           <button
-            aria-label="Close review panel"
+            aria-label="Fermer le panneau de contrôle"
             className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-lg leading-none text-slate-500 transition hover:border-slate-300 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
             onClick={onClose}
             ref={closeButtonRef}
@@ -551,19 +555,19 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         <div className="flex flex-col gap-6 px-6 py-7 sm:px-8 sm:py-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-              Application {review.applicationId}
+              Demande {review.applicationId}
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
               {review.company.name}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-              Review the received documents against the expected application
-              requirements.
+              Comparez les documents reçus aux pièces attendues pour cette
+              demande.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs font-medium text-slate-500">
-              Review status
+              État du contrôle
             </span>
             <ReviewStatusBadge status={review.documentReviewStatus} />
           </div>
@@ -571,57 +575,53 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
       </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <SummaryCard eyebrow="Applicant" title="Company summary">
+        <SummaryCard eyebrow="Demandeur" title="Informations sur l’entreprise">
           <DetailList
             items={[
               { label: 'SIREN', value: review.company.siren },
               {
-                label: 'Business',
+                label: 'Activité',
                 value: `${review.company.businessType} / ${review.company.legalCategory}`,
               },
-              { label: 'NAF code', value: review.company.codeNaf },
-              { label: 'Owner', value: review.company.owner },
+              { label: 'Code NAF', value: review.company.codeNaf },
+              { label: 'Dirigeant', value: review.company.owner },
               {
-                label: 'Created',
+                label: 'Création',
                 value: formatDate(review.company.creationDate),
               },
               {
-                label: 'Address',
+                label: 'Adresse',
                 value: `${review.company.address}, ${review.company.postalCode} ${review.company.countryCode}`,
               },
             ]}
           />
         </SummaryCard>
 
-        <SummaryCard eyebrow="Request" title="Financing summary">
+        <SummaryCard eyebrow="Demande" title="Synthèse du financement">
           <DetailList
             items={[
               {
-                label: 'Amount',
+                label: 'Montant',
                 value: formatAmount(review.financingRequest.amount),
               },
               {
-                label: 'Financing type',
+                label: 'Type de financement',
                 value: financingTypeLabels[review.financingRequest.type],
               },
               {
-                label: 'Duration',
-                value: `${review.financingRequest.durationInMonth} ${
-                  review.financingRequest.durationInMonth === 1
-                    ? 'month'
-                    : 'months'
-                }`,
+                label: 'Durée',
+                value: `${review.financingRequest.durationInMonth} mois`,
               },
               {
-                label: 'Interest rate',
-                value: `${formatInterestRate(review.financingRequest.interestRate)}% annual`,
+                label: 'Taux d’intérêt',
+                value: `${formatInterestRate(review.financingRequest.interestRate)} % par an`,
               },
               {
-                label: 'Request status',
+                label: 'État de la demande',
                 value: formatRequestStatus(review.financingRequest.status),
               },
               {
-                label: 'Use of funds',
+                label: 'Utilisation des fonds',
                 value: review.financingRequest.fundUsage,
               },
             ]}
@@ -636,32 +636,32 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-              Received files
+              Fichiers reçus
             </p>
             <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
-              Documents and diagnostics
+              Documents et diagnostics
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              Documents are grouped by type. Mocked extraction diagnostics
-              appear only on the files that have a simulated pipeline signal.
+              Les documents sont regroupés par type. Les diagnostics simulés
+              apparaissent uniquement sur les fichiers concernés.
             </p>
           </div>
           <p className="text-sm font-medium text-slate-500">
             {review.documents.length}{' '}
-            {review.documents.length === 1 ? 'document' : 'documents'} received
+            {review.documents.length === 1 ? 'document reçu' : 'documents reçus'}
           </p>
         </div>
 
         <div className="mt-7 grid gap-8 xl:grid-cols-2">
           <DocumentGroup
-            title="Tax returns"
-            description="Fiscal documents received for the application."
+            title="Liasses fiscales"
+            description="Documents fiscaux reçus pour cette demande."
             documents={taxReturns}
             diagnosticsByDocumentId={diagnosticsByDocumentId}
           />
           <DocumentGroup
-            title="Bank statements"
-            description="Statements grouped by their source document."
+            title="Relevés bancaires"
+            description="Relevés regroupés par document source."
             documents={bankStatements}
             diagnosticsByDocumentId={diagnosticsByDocumentId}
           />
@@ -677,7 +677,7 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
         onClick={() => setIsPanelOpen(true)}
         type="button"
       >
-        Review &amp; email
+        Contrôler et rédiger
         {review.problems.length > 0 && (
           <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white/15 px-1.5 py-0.5 text-xs font-bold tabular-nums">
             {review.problems.length}
@@ -686,10 +686,10 @@ function ApplicationDetail({ review }: ApplicationDetailProps) {
       </button>
 
       <ReviewDrawer
-        description="Confirm detected problems, then draft the client email."
+        description="Confirmez les problèmes détectés, puis préparez l’e-mail au client."
         onClose={closePanel}
         open={isPanelOpen}
-        title="Document review"
+        title="Contrôle documentaire"
       >
         <ProblemChecklist
           onSelectionChange={updateProblemSelection}

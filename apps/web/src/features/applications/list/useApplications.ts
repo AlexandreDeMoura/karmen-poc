@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { ApplicationListItem } from '../application.types'
-import { fetchApplications } from '../applications.api'
+import {
+  fetchApplications,
+  getApplicationsErrorMessage,
+} from '../applications.api'
 
 type ApplicationsState =
   | { status: 'loading' }
@@ -27,10 +30,10 @@ export function useApplications() {
 
         setState({
           status: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'An unknown request error occurred.',
+          message: getApplicationsErrorMessage(
+            error,
+            'Impossible de contacter l’API. Vérifiez qu’elle est démarrée.',
+          ),
         })
       })
 

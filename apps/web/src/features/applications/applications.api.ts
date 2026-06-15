@@ -23,6 +23,17 @@ export class ApplicationsApiError extends Error {
   }
 }
 
+export function getApplicationsErrorMessage(
+  error: unknown,
+  fallback: string,
+): string {
+  if (error instanceof TypeError || error instanceof SyntaxError) {
+    return fallback
+  }
+
+  return error instanceof Error ? error.message : fallback
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -312,7 +323,7 @@ function getErrorDetail(responseBody: string, statusText: string): string {
       }
     }
   } catch {
-    // Fall back to the raw response body for non-JSON errors.
+    // Use the raw response body for non-JSON errors.
   }
 
   return trimmedBody
@@ -326,7 +337,7 @@ async function getResponseError(
   const detail = getErrorDetail(responseBody, response.statusText)
 
   return new ApplicationsApiError(
-    `${requestName} failed (${response.status})${detail ? `: ${detail}` : ''}`,
+    `${requestName} a échoué (${response.status})${detail ? ` : ${detail}` : ''}`,
     response.status,
   )
 }
@@ -340,13 +351,15 @@ export async function fetchApplications(
   })
 
   if (!response.ok) {
-    throw await getResponseError(response, 'Applications request')
+    throw await getResponseError(response, 'La récupération des demandes')
   }
 
   const payload: unknown = await response.json()
 
   if (!Array.isArray(payload) || !payload.every(isApplicationListItem)) {
-    throw new Error('Applications request returned an unexpected response.')
+    throw new Error(
+      'La récupération des demandes a renvoyé une réponse inattendue.',
+    )
   }
 
   return payload
@@ -366,14 +379,14 @@ export async function fetchApplicationReview(
   )
 
   if (!response.ok) {
-    throw await getResponseError(response, 'Application review request')
+    throw await getResponseError(response, 'La récupération du contrôle')
   }
 
   const payload: unknown = await response.json()
 
   if (!isApplicationReview(payload)) {
     throw new Error(
-      'Application review request returned an unexpected response.',
+      'La récupération du contrôle a renvoyé une réponse inattendue.',
     )
   }
 
@@ -401,13 +414,15 @@ export async function generateEmailPreview(
   )
 
   if (!response.ok) {
-    throw await getResponseError(response, 'Email preview request')
+    throw await getResponseError(response, 'La génération de l’aperçu')
   }
 
   const payload: unknown = await response.json()
 
   if (!isEmailPreview(payload)) {
-    throw new Error('Email preview request returned an unexpected response.')
+    throw new Error(
+      'La génération de l’aperçu a renvoyé une réponse inattendue.',
+    )
   }
 
   return payload

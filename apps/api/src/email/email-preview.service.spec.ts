@@ -94,7 +94,9 @@ describe('EmailPreviewService', () => {
     ['MISSING_TAX_RETURN_YEAR:2023', null],
   ])('rejects malformed selected problem IDs: %p', (selectedProblemIds) => {
     expect(() => service.generatePreview(problems, selectedProblemIds)).toThrow(
-      new BadRequestException('selectedProblemIds must be an array of strings'),
+      new BadRequestException(
+        'selectedProblemIds doit être un tableau de chaînes de caractères',
+      ),
     );
   });
 
@@ -106,7 +108,7 @@ describe('EmailPreviewService', () => {
       ]),
     ).toThrow(
       new BadRequestException(
-        'Selected problem ID "MISSING_TAX_RETURN_YEAR:2023" is duplicated',
+        'Le problème sélectionné « MISSING_TAX_RETURN_YEAR:2023 » est présent plusieurs fois',
       ),
     );
   });
@@ -116,7 +118,7 @@ describe('EmailPreviewService', () => {
       service.generatePreview(problems, ['MISSING_TAX_RETURN_YEAR:2099']),
     ).toThrow(
       new BadRequestException(
-        'Selected problem ID "MISSING_TAX_RETURN_YEAR:2099" was not found in the application review',
+        'Le problème sélectionné « MISSING_TAX_RETURN_YEAR:2099 » est absent du contrôle de la demande',
       ),
     );
   });
@@ -132,7 +134,7 @@ describe('EmailPreviewService', () => {
         service.generatePreview(problems, selectedProblemIds),
       ).toThrow(
         new BadRequestException(
-          'At least one selected problem must be client-facing and email-capable',
+          'Au moins un problème sélectionné doit pouvoir être communiqué au client par e-mail',
         ),
       );
     },

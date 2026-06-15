@@ -49,25 +49,25 @@ function ApplicationCards({ applications }: ApplicationListTableProps) {
 
           <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-slate-100 pt-5 text-sm">
             <div>
-              <dt className="text-slate-500">Financing</dt>
+              <dt className="text-slate-500">Financement</dt>
               <dd className="mt-1 font-medium text-slate-900">
                 {financingTypeLabels[application.financingType]}
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Amount</dt>
+              <dt className="text-slate-500">Montant</dt>
               <dd className="mt-1 font-semibold text-slate-950">
                 {formatAmount(application.requestedAmount)}
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Risk</dt>
+              <dt className="text-slate-500">Risque</dt>
               <dd className="mt-1.5">
                 <RiskBadge riskBucket={application.riskBucket} />
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Global score</dt>
+              <dt className="text-slate-500">Score global</dt>
               <dd className="mt-1 font-semibold text-slate-950">
                 {application.globalScore}
                 <span className="font-normal text-slate-400"> / 100</span>
@@ -79,7 +79,7 @@ function ApplicationCards({ applications }: ApplicationListTableProps) {
             className="mt-5 inline-flex text-sm font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
             href={getApplicationPath(application.applicationId)}
           >
-            Review application
+            Examiner la demande
           </a>
         </article>
       ))}
@@ -98,27 +98,27 @@ export function ApplicationListTable({
         <div className="overflow-x-auto">
           <table className="w-full min-w-245 border-collapse text-left">
             <caption className="sr-only">
-              Financing applications and their document review status
+              Demandes de financement et état de leur contrôle documentaire
             </caption>
             <thead className="bg-slate-50 text-xs font-semibold tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-5 py-4" scope="col">
-                  Company
+                  Entreprise
                 </th>
                 <th className="px-4 py-4" scope="col">
-                  Financing
+                  Financement
                 </th>
                 <th className="px-4 py-4" scope="col">
-                  Amount
+                  Montant
                 </th>
                 <th className="px-4 py-4" scope="col">
-                  Risk
+                  Risque
                 </th>
                 <th className="px-4 py-4" scope="col">
                   Score
                 </th>
                 <th className="px-4 py-4" scope="col">
-                  Review status
+                  État du contrôle
                 </th>
                 <th className="px-5 py-4 text-right" scope="col">
                   Action
@@ -162,7 +162,7 @@ export function ApplicationListTable({
                       className="text-sm font-semibold whitespace-nowrap text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
                       href={getApplicationPath(application.applicationId)}
                     >
-                      Review
+                      Examiner
                     </a>
                   </td>
                 </tr>

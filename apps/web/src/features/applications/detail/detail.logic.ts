@@ -127,35 +127,35 @@ export function getDiagnosticSignals(
   const signals: string[] = []
 
   if (diagnostic.pdfPrecheck?.hasTextLayer === false) {
-    signals.push('No text layer detected')
+    signals.push('Aucune couche de texte détectée')
   }
 
   if (diagnostic.pdfPrecheck?.likelyScannedPdf === true) {
-    signals.push('Likely scanned PDF')
+    signals.push('PDF probablement numérisé')
   }
 
   if (diagnostic.pdfPrecheck?.isPasswordProtected === true) {
-    signals.push('Password protection detected')
+    signals.push('Protection par mot de passe détectée')
   }
 
   if (diagnostic.pdfPrecheck?.isCorrupted === true) {
-    signals.push('File may be corrupted')
+    signals.push('Le fichier est peut-être corrompu')
   }
 
   if (diagnostic.qualitySignals?.lowResolution === true) {
-    signals.push('Low resolution')
+    signals.push('Faible résolution')
   }
 
   if (diagnostic.qualitySignals?.blurDetected === true) {
-    signals.push('Blur detected')
+    signals.push('Flou détecté')
   }
 
   if (diagnostic.qualitySignals?.croppedPageDetected === true) {
-    signals.push('Cropped page detected')
+    signals.push('Page rognée détectée')
   }
 
   if (diagnostic.qualitySignals?.skewDetected === true) {
-    signals.push('Page skew detected')
+    signals.push('Page inclinée détectée')
   }
 
   return signals

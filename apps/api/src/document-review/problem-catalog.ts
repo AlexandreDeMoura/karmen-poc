@@ -14,12 +14,12 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     defaultSeverity: 'blocking',
     clientFacing: true,
     selectedByDefault: true,
-    analystLabel: 'Missing tax return year',
-    recommendedAction: 'Request missing tax return from client',
+    analystLabel: 'Liasse fiscale manquante',
+    recommendedAction: 'Demander la liasse fiscale manquante au client',
     buildDescription: (metadata) =>
-      `No tax return was received for fiscal year ${readNumber(metadata, 'year')}.`,
+      `Aucune liasse fiscale n’a été reçue pour l’exercice ${readNumber(metadata, 'year')}.`,
     buildClientFacingLabel: (metadata) =>
-      `Missing tax return for fiscal year ${readNumber(metadata, 'year')}`,
+      `Liasse fiscale manquante pour l’exercice ${readNumber(metadata, 'year')}`,
     buildEmailFragment: (metadata) =>
       `la liasse fiscale de l’exercice ${readNumber(metadata, 'year')}`,
   }),
@@ -28,11 +28,11 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     defaultSeverity: 'blocking',
     clientFacing: true,
     selectedByDefault: true,
-    analystLabel: 'Insufficient bank statement coverage',
-    recommendedAction: 'Request missing bank statements',
+    analystLabel: 'Période de relevés bancaires insuffisante',
+    recommendedAction: 'Demander les relevés bancaires manquants',
     buildDescription: buildMissingBankStatementDescription,
     buildClientFacingLabel: (metadata) =>
-      `Bank statements cover ${readNumber(metadata, 'detectedMonths')}/${readNumber(metadata, 'expectedMonths')} required months`,
+      `Les relevés bancaires couvrent ${readNumber(metadata, 'detectedMonths')}/${readNumber(metadata, 'expectedMonths')} mois requis`,
     buildEmailFragment: () =>
       'les relevés bancaires manquants afin de couvrir les 12 derniers mois',
   }),
@@ -41,22 +41,23 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     defaultSeverity: 'warning',
     clientFacing: false,
     selectedByDefault: false,
-    analystLabel: 'Document extraction failed',
-    recommendedAction: 'Review the document and extraction failure manually',
+    analystLabel: 'Échec de l’extraction du document',
+    recommendedAction:
+      'Contrôler manuellement le document et l’échec de l’extraction',
     buildDescription: (metadata) =>
-      `Extraction failed for ${readDocumentReference(metadata)}.`,
+      `L’extraction a échoué pour ${readDocumentReference(metadata)}.`,
   }),
   SCANNED_PDF_NO_TEXT_LAYER: catalogEntry({
     code: 'SCANNED_PDF_NO_TEXT_LAYER',
     defaultSeverity: 'blocking',
     clientFacing: true,
     selectedByDefault: true,
-    analystLabel: 'Scanned PDF without text layer',
-    recommendedAction: 'Request original native PDF',
+    analystLabel: 'PDF numérisé sans couche de texte',
+    recommendedAction: 'Demander le PDF natif d’origine',
     buildDescription: (metadata) =>
-      `${readDocumentReference(metadata)} appears to be a scanned PDF without a text layer.`,
+      `${capitalize(readDocumentReference(metadata))} semble être un PDF numérisé sans couche de texte.`,
     buildClientFacingLabel: () =>
-      'The uploaded document appears to be a scanned PDF',
+      'Le document transmis semble être un PDF numérisé',
     buildEmailFragment: () =>
       'le PDF original téléchargé depuis votre espace bancaire ou votre logiciel comptable, plutôt qu’un scan ou une photo',
   }),
@@ -65,20 +66,22 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     defaultSeverity: 'info',
     clientFacing: false,
     selectedByDefault: false,
-    analystLabel: 'Multiple bank accounts require review',
-    recommendedAction: 'Confirm all relevant bank accounts have been reviewed',
+    analystLabel: 'Plusieurs comptes bancaires à contrôler',
+    recommendedAction:
+      'Confirmer que tous les comptes bancaires concernés ont été contrôlés',
     buildDescription: (metadata) =>
-      `${readNumber(metadata, 'accountCount')} bank accounts were detected for this application.`,
+      `${readNumber(metadata, 'accountCount')} comptes bancaires ont été détectés pour cette demande.`,
   }),
   HIGH_RISK_MANUAL_REVIEW: catalogEntry({
     code: 'HIGH_RISK_MANUAL_REVIEW',
     defaultSeverity: 'warning',
     clientFacing: false,
     selectedByDefault: false,
-    analystLabel: 'High-risk application requiring manual review',
-    recommendedAction: 'Review financial indicators before decision',
+    analystLabel: 'Demande à risque élevé nécessitant un contrôle manuel',
+    recommendedAction:
+      'Contrôler les indicateurs financiers avant de prendre une décision',
     buildDescription: () =>
-      'The application is in the high risk bucket and requires analyst review.',
+      'La demande présente un risque élevé et nécessite un contrôle par un analyste.',
   }),
 });
 
@@ -133,16 +136,20 @@ function readDocumentReference(metadata: ProblemCatalogMetadata): string {
   const documentId = readOptionalString(metadata, 'documentId');
 
   if (documentName) {
-    return `document "${documentName}"`;
+    return `le document « ${documentName} »`;
   }
 
   if (documentId) {
-    return `document "${documentId}"`;
+    return `le document « ${documentId} »`;
   }
 
   throw new TypeError(
     'Problem metadata must include "documentName" or "documentId"',
   );
+}
+
+function capitalize(value: string): string {
+  return `${value[0].toUpperCase()}${value.slice(1)}`;
 }
 
 function buildMissingBankStatementDescription(
@@ -153,8 +160,8 @@ function buildMissingBankStatementDescription(
   const account = readOptionalString(metadata, 'account');
 
   if (account) {
-    return `Bank statements for account ${account} cover ${detectedMonths} of ${expectedMonths} required months.`;
+    return `Les relevés bancaires du compte ${account} couvrent ${detectedMonths} des ${expectedMonths} mois requis.`;
   }
 
-  return `Bank statements without an account identifier cover ${detectedMonths} of ${expectedMonths} required months.`;
+  return `Les relevés bancaires sans identifiant de compte couvrent ${detectedMonths} des ${expectedMonths} mois requis.`;
 }

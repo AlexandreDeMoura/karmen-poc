@@ -8,7 +8,7 @@ function LoadingState() {
       aria-live="polite"
       className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
     >
-      <p className="sr-only">Loading applications...</p>
+      <p className="sr-only">Chargement des demandes...</p>
       <div className="border-b border-slate-100 bg-slate-50 px-5 py-4">
         <div className="h-3 w-2/3 animate-pulse rounded bg-slate-200 sm:w-1/3" />
       </div>
@@ -42,10 +42,11 @@ function EmptyState() {
         0
       </div>
       <h2 className="mt-5 text-lg font-semibold text-slate-950">
-        No applications yet
+        Aucune demande pour le moment
       </h2>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">
-        Applications will appear here once they are available from the API.
+        Les demandes apparaîtront ici dès qu’elles seront disponibles via
+        l’API.
       </p>
     </div>
   )
@@ -69,10 +70,10 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
         !
       </div>
       <h2 className="mt-5 text-lg font-semibold text-slate-950">
-        Applications could not be loaded
+        Impossible de charger les demandes
       </h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
-        Check that the API is running, then try again.
+        Vérifiez que l’API est démarrée, puis réessayez.
       </p>
       <p className="mx-auto mt-2 max-w-xl text-xs text-slate-500">{message}</p>
       <button
@@ -80,7 +81,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
         onClick={onRetry}
         type="button"
       >
-        Try again
+        Réessayer
       </button>
     </div>
   )
@@ -105,11 +106,11 @@ export function ApplicationListPage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-slate-950">Karmen</p>
-              <p className="text-xs text-slate-500">Credit operations</p>
+              <p className="text-xs text-slate-500">Opérations de crédit</p>
             </div>
           </div>
           <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Document readiness
+            Suivi documentaire
           </span>
         </div>
       </header>
@@ -118,20 +119,21 @@ export function ApplicationListPage() {
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-2 text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-              Portfolio
+              Portefeuille
             </p>
             <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Financing applications
+              Demandes de financement
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-              Review document readiness before starting credit analysis.
+              Vérifiez que les documents sont complets avant de commencer
+              l’analyse de crédit.
             </p>
           </div>
 
           {applicationCount !== null && (
             <p className="text-sm font-medium text-slate-600" aria-live="polite">
               {applicationCount}{' '}
-              {applicationCount === 1 ? 'application' : 'applications'}
+              {applicationCount === 1 ? 'demande' : 'demandes'}
             </p>
           )}
         </div>

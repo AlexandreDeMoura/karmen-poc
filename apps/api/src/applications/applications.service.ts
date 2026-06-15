@@ -22,7 +22,7 @@ export class ApplicationsService {
       );
 
     if (!application) {
-      throw new NotFoundException(`Application "${applicationId}" not found`);
+      throw new NotFoundException(`Demande « ${applicationId} » introuvable`);
     }
 
     return application;

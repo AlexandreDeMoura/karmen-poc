@@ -5,17 +5,17 @@ const statusPresentation: Record<
   { label: string; className: string; dotClassName: string }
 > = {
   complete: {
-    label: 'Complete',
+    label: 'Complet',
     className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
     dotClassName: 'bg-emerald-500',
   },
   needs_action: {
-    label: 'Needs action',
+    label: 'Action requise',
     className: 'border-rose-200 bg-rose-50 text-rose-800',
     dotClassName: 'bg-rose-500',
   },
   manual_review: {
-    label: 'Manual review',
+    label: 'Contrôle manuel',
     className: 'border-amber-200 bg-amber-50 text-amber-900',
     dotClassName: 'bg-amber-500',
   },

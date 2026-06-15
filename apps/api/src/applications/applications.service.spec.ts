@@ -25,7 +25,7 @@ describe('ApplicationsService', () => {
   it('throws NotFoundException for an unknown application ID', () => {
     expect(() => service.getById('fr-999')).toThrow(NotFoundException);
     expect(() => service.getById('fr-999')).toThrow(
-      'Application "fr-999" not found',
+      'Demande « fr-999 » introuvable',
     );
   });
 
@@ -46,7 +46,7 @@ describe('ApplicationsService', () => {
   it('throws NotFoundException when building a review for an unknown application', () => {
     expect(() => service.getReview('fr-999')).toThrow(NotFoundException);
     expect(() => service.getReview('fr-999')).toThrow(
-      'Application "fr-999" not found',
+      'Demande « fr-999 » introuvable',
     );
   });
 
@@ -84,14 +84,16 @@ describe('ApplicationsService', () => {
     expect(() =>
       service.generateEmailPreview('fr-004', 'not-an-array'),
     ).toThrow(
-      new BadRequestException('selectedProblemIds must be an array of strings'),
+      new BadRequestException(
+        'selectedProblemIds doit être un tableau de chaînes de caractères',
+      ),
     );
   });
 
   it('throws NotFoundException before generating an email for an unknown application', () => {
     expect(() =>
       service.generateEmailPreview('fr-999', ['MISSING_TAX_RETURN_YEAR:2023']),
-    ).toThrow(new NotFoundException('Application "fr-999" not found'));
+    ).toThrow(new NotFoundException('Demande « fr-999 » introuvable'));
   });
 
   it('projects the four fixtures into deterministic list items', () => {

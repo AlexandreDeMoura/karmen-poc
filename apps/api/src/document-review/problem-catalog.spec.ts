@@ -30,20 +30,20 @@ describe('PROBLEM_CATALOG', () => {
     );
 
     expect(missingTaxReturn.buildClientFacingLabel?.({ year: 2023 })).toBe(
-      'Missing tax return for fiscal year 2023',
+      'Liasse fiscale manquante pour l’exercice 2023',
     );
     expect(missingTaxReturn.buildEmailFragment?.({ year: 2023 })).toBe(
       'la liasse fiscale de l’exercice 2023',
     );
     expect(missingTaxReturn.buildDescription({ year: 2023 })).toBe(
-      'No tax return was received for fiscal year 2023.',
+      'Aucune liasse fiscale n’a été reçue pour l’exercice 2023.',
     );
     expect(
       missingBankMonths.buildClientFacingLabel?.({
         detectedMonths: 6,
         expectedMonths: 12,
       }),
-    ).toBe('Bank statements cover 6/12 required months');
+    ).toBe('Les relevés bancaires couvrent 6/12 mois requis');
     expect(
       missingBankMonths.buildDescription({
         account: 'FR761234',
@@ -51,7 +51,7 @@ describe('PROBLEM_CATALOG', () => {
         expectedMonths: 12,
       }),
     ).toBe(
-      'Bank statements for account FR761234 cover 6 of 12 required months.',
+      'Les relevés bancaires du compte FR761234 couvrent 6 des 12 mois requis.',
     );
     expect(missingBankMonths.buildEmailFragment?.({})).toBe(
       'les relevés bancaires manquants afin de couvrir les 12 derniers mois',

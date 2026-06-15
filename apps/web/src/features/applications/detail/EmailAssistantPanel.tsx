@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DocumentProblem, EmailPreview } from '../application.types'
-import { generateEmailPreview } from '../applications.api'
+import {
+  generateEmailPreview,
+  getApplicationsErrorMessage,
+} from '../applications.api'
 import { getSelectedClientFacingProblems } from './detail.logic'
 
 interface EmailAssistantPanelProps {
@@ -111,10 +114,10 @@ export function EmailAssistantPanel({
 
       setRequestState({
         status: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'An unknown email preview error occurred.',
+        message: getApplicationsErrorMessage(
+          error,
+          'Impossible de contacter l’API pour générer l’aperçu.',
+        ),
         selectionRevision: requestedSelectionRevision,
       })
     } finally {
@@ -143,13 +146,13 @@ export function EmailAssistantPanel({
       await navigator.clipboard.writeText(preview.body)
       setCopyFeedback({
         status: 'success',
-        message: 'Edited email body copied to the clipboard.',
+        message: 'Le contenu modifié de l’e-mail a été copié.',
       })
     } catch {
       setCopyFeedback({
         status: 'error',
         message:
-          'Copy failed. Your edited email is still available. Check clipboard permissions and try again.',
+          'La copie a échoué. Votre e-mail modifié est toujours disponible. Vérifiez les autorisations du presse-papiers, puis réessayez.',
       })
     } finally {
       setIsCopying(false)
@@ -161,14 +164,14 @@ export function EmailAssistantPanel({
       <div className="flex flex-col gap-5 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
           <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-            Client communication
+            Communication client
           </p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
-            Email assistant
+            Assistant de rédaction
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Generate a deterministic draft from the selected client-facing
-            requests, then edit it before copying.
+            Générez un brouillon à partir des demandes client sélectionnées,
+            puis modifiez-le avant de le copier.
           </p>
         </div>
 
@@ -179,10 +182,10 @@ export function EmailAssistantPanel({
           type="button"
         >
           {isGenerating
-            ? 'Generating email...'
+            ? 'Génération en cours...'
             : preview
-              ? 'Regenerate email'
-              : 'Generate email'}
+              ? 'Régénérer l’e-mail'
+              : 'Générer l’e-mail'}
         </button>
       </div>
 
@@ -190,7 +193,7 @@ export function EmailAssistantPanel({
         {!hasSelectedClientFacingProblem && (
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
             <p className="text-sm font-semibold text-amber-950">
-              Select at least one client-facing request to generate an email.
+              Sélectionnez au moins une demande client pour générer un e-mail.
             </p>
           </div>
         )}
@@ -201,7 +204,7 @@ export function EmailAssistantPanel({
             className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3"
           >
             <p className="text-sm font-semibold text-sky-950">
-              Generating the email preview...
+              Génération de l’aperçu de l’e-mail...
             </p>
           </div>
         )}
@@ -212,7 +215,7 @@ export function EmailAssistantPanel({
             role="alert"
           >
             <p className="text-sm font-semibold text-rose-950">
-              The email preview could not be generated.
+              Impossible de générer l’aperçu de l’e-mail.
             </p>
             <p className="mt-1 text-sm leading-6 text-rose-800">
               {requestError}
@@ -226,11 +229,11 @@ export function EmailAssistantPanel({
           isPreviewStale && (
             <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
               <p className="text-sm font-semibold text-amber-950">
-                This preview is out of date.
+                Cet aperçu n’est plus à jour.
               </p>
               <p className="mt-1 text-sm leading-6 text-amber-800">
-                The checklist changed after generation. Regenerate the email
-                before copying it.
+                La sélection a changé après la génération. Régénérez l’e-mail
+                avant de le copier.
               </p>
             </div>
           )}
@@ -242,14 +245,13 @@ export function EmailAssistantPanel({
           !isPreviewStale && (
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
               <p className="text-sm font-semibold text-emerald-950">
-                Email preview ready
+                Aperçu de l’e-mail prêt
               </p>
               <p className="mt-1 text-sm leading-6 text-emerald-800">
                 {preview.includedProblemIds.length}{' '}
                 {preview.includedProblemIds.length === 1
-                  ? 'client request is'
-                  : 'client requests are'}{' '}
-                included.
+                  ? 'demande client incluse.'
+                  : 'demandes client incluses.'}
               </p>
             </div>
           )}
@@ -264,7 +266,7 @@ export function EmailAssistantPanel({
         >
           <div>
             <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-              Subject
+              Objet
             </p>
             <p className="mt-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-950">
               {preview.subject}
@@ -276,7 +278,7 @@ export function EmailAssistantPanel({
               className="text-xs font-semibold tracking-wide text-slate-500 uppercase"
               htmlFor="email-preview-body"
             >
-              Editable email body
+              Contenu modifiable de l’e-mail
             </label>
             <textarea
               className="mt-2 min-h-72 w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm leading-6 text-slate-950 shadow-inner outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-950/10 disabled:cursor-not-allowed disabled:bg-slate-50"
@@ -290,8 +292,8 @@ export function EmailAssistantPanel({
 
           <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-center @2xl:justify-between">
             <p className="text-xs leading-5 text-slate-500">
-              This preview is not sent automatically. Copying uses the current
-              edited body.
+              Cet aperçu n’est pas envoyé automatiquement. La copie utilise le
+              contenu actuellement affiché.
             </p>
             <button
               className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
@@ -299,7 +301,7 @@ export function EmailAssistantPanel({
               onClick={copyBody}
               type="button"
             >
-              {isCopying ? 'Copying...' : 'Copy edited body'}
+              {isCopying ? 'Copie en cours...' : 'Copier le contenu modifié'}
             </button>
           </div>
 

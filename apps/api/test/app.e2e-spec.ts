@@ -160,11 +160,12 @@ describe('AppController (e2e)', () => {
             id: 'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
             code: 'MISSING_BANK_STATEMENT_MONTHS',
             severity: 'blocking',
-            analystLabel: 'Insufficient bank statement coverage',
-            clientFacingLabel: 'Bank statements cover 10/12 required months',
+            analystLabel: 'Période de relevés bancaires insuffisante',
+            clientFacingLabel:
+              'Les relevés bancaires couvrent 10/12 mois requis',
             description:
-              'Bank statements for account FR7630002000001 cover 10 of 12 required months.',
-            recommendedAction: 'Request missing bank statements',
+              'Les relevés bancaires du compte FR7630002000001 couvrent 10 des 12 mois requis.',
+            recommendedAction: 'Demander les relevés bancaires manquants',
             source: 'requirements_engine',
             clientFacing: true,
             selectedByDefault: true,
@@ -180,11 +181,11 @@ describe('AppController (e2e)', () => {
             id: 'EXTRACTION_FAILED:d-012',
             code: 'EXTRACTION_FAILED',
             severity: 'warning',
-            analystLabel: 'Document extraction failed',
+            analystLabel: 'Échec de l’extraction du document',
             description:
-              'Extraction failed for document "Relevés LCL janv-oct 2024".',
+              'L’extraction a échoué pour le document « Relevés LCL janv-oct 2024 ».',
             recommendedAction:
-              'Review the document and extraction failure manually',
+              'Contrôler manuellement le document et l’échec de l’extraction',
             source: 'mocked_document_diagnostic',
             documentId: 'd-012',
             clientFacing: false,
@@ -198,12 +199,12 @@ describe('AppController (e2e)', () => {
             id: 'SCANNED_PDF_NO_TEXT_LAYER:d-012',
             code: 'SCANNED_PDF_NO_TEXT_LAYER',
             severity: 'blocking',
-            analystLabel: 'Scanned PDF without text layer',
+            analystLabel: 'PDF numérisé sans couche de texte',
             clientFacingLabel:
-              'The uploaded document appears to be a scanned PDF',
+              'Le document transmis semble être un PDF numérisé',
             description:
-              'document "Relevés LCL janv-oct 2024" appears to be a scanned PDF without a text layer.',
-            recommendedAction: 'Request original native PDF',
+              'Le document « Relevés LCL janv-oct 2024 » semble être un PDF numérisé sans couche de texte.',
+            recommendedAction: 'Demander le PDF natif d’origine',
             source: 'mocked_document_diagnostic',
             documentId: 'd-012',
             clientFacing: true,
@@ -223,7 +224,7 @@ describe('AppController (e2e)', () => {
       .get('/applications/fr-999/review')
       .expect(404)
       .expect({
-        message: 'Application "fr-999" not found',
+        message: 'Demande « fr-999 » introuvable',
         error: 'Not Found',
         statusCode: 404,
       });
@@ -269,7 +270,8 @@ describe('AppController (e2e)', () => {
       .send({ selectedProblemIds: 'MISSING_BANK_STATEMENT_MONTHS' })
       .expect(400)
       .expect({
-        message: 'selectedProblemIds must be an array of strings',
+        message:
+          'selectedProblemIds doit être un tableau de chaînes de caractères',
         error: 'Bad Request',
         statusCode: 400,
       });
@@ -281,7 +283,7 @@ describe('AppController (e2e)', () => {
       .send({ selectedProblemIds: ['MISSING_TAX_RETURN_YEAR:2023'] })
       .expect(404)
       .expect({
-        message: 'Application "fr-999" not found',
+        message: 'Demande « fr-999 » introuvable',
         error: 'Not Found',
         statusCode: 404,
       });

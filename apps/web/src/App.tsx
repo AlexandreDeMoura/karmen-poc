@@ -12,16 +12,16 @@ function RouteNotFound() {
           404
         </p>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
-          Page not found
+          Page introuvable
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          This route is not part of the document readiness workspace.
+          Cette page ne fait pas partie de l’espace de suivi documentaire.
         </p>
         <a
           className="mt-6 inline-flex rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
           href="/"
         >
-          Back to applications
+          Retour aux demandes
         </a>
       </div>
     </main>

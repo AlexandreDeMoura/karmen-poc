@@ -10,15 +10,15 @@ export const riskPresentation: Record<
   BadgePresentation
 > = {
   low: {
-    label: 'Low',
+    label: 'Faible',
     className: 'bg-emerald-50 text-emerald-800 ring-emerald-600/20',
   },
   medium: {
-    label: 'Medium',
+    label: 'Moyen',
     className: 'bg-amber-50 text-amber-900 ring-amber-600/20',
   },
   high: {
-    label: 'High',
+    label: 'Élevé',
     className: 'bg-rose-50 text-rose-800 ring-rose-600/20',
   },
 }

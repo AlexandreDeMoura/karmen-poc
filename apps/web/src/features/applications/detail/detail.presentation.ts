@@ -10,11 +10,11 @@ interface BadgePresentation {
   className: string
 }
 
-const rateFormatter = new Intl.NumberFormat('en-GB', {
+const rateFormatter = new Intl.NumberFormat('fr-FR', {
   maximumFractionDigits: 2,
 })
 
-const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
@@ -23,15 +23,15 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
 
 export const riskPresentation: Record<RiskBucket, BadgePresentation> = {
   low: {
-    label: 'Low risk',
+    label: 'Risque faible',
     className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
   },
   medium: {
-    label: 'Medium risk',
+    label: 'Risque moyen',
     className: 'border-amber-200 bg-amber-50 text-amber-900',
   },
   high: {
-    label: 'High risk',
+    label: 'Risque élevé',
     className: 'border-rose-200 bg-rose-50 text-rose-800',
   },
 }
@@ -41,15 +41,15 @@ export const extractionStatusPresentation: Record<
   BadgePresentation
 > = {
   success: {
-    label: 'Extraction succeeded',
+    label: 'Extraction réussie',
     className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
   },
   partial_success: {
-    label: 'Partial extraction',
+    label: 'Extraction partielle',
     className: 'border-amber-200 bg-amber-50 text-amber-900',
   },
   failed: {
-    label: 'Extraction failed',
+    label: 'Échec de l’extraction',
     className: 'border-rose-200 bg-rose-50 text-rose-800',
   },
 }
@@ -59,11 +59,11 @@ export const severityPresentation: Record<
   BadgePresentation
 > = {
   blocking: {
-    label: 'Blocking',
+    label: 'Bloquant',
     className: 'border-rose-200 bg-rose-50 text-rose-800',
   },
   warning: {
-    label: 'Warning',
+    label: 'Avertissement',
     className: 'border-amber-200 bg-amber-50 text-amber-900',
   },
   info: {
@@ -73,9 +73,9 @@ export const severityPresentation: Record<
 }
 
 export const problemSourceLabels: Record<ProblemSource, string> = {
-  requirements_engine: 'Requirements engine',
-  mocked_document_diagnostic: 'Mocked document diagnostic',
-  score_context: 'Score context',
+  requirements_engine: 'Moteur de règles',
+  mocked_document_diagnostic: 'Diagnostic documentaire simulé',
+  score_context: 'Contexte du score',
 }
 
 export function formatInterestRate(value: number): string {
@@ -88,16 +88,23 @@ export function formatDate(value: string): string {
 }
 
 export function formatRequestStatus(value: string): string {
+  const statusLabels: Record<string, string> = {
+    pending_review: 'En attente de contrôle',
+  }
+
+  if (statusLabels[value]) {
+    return statusLabels[value]
+  }
+
   return value
     .split('_')
     .filter(Boolean)
-    .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
     .join(' ')
 }
 
 export function maskAccount(account?: string): string {
   if (!account) {
-    return 'Not specified'
+    return 'Non renseigné'
   }
 
   const normalizedAccount = account.replace(/\s+/g, '')

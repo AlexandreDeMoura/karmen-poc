@@ -7,8 +7,8 @@ const amountFormatter = new Intl.NumberFormat('fr-FR', {
 })
 
 export const financingTypeLabels: Record<FinancingType, string> = {
-  loan: 'Loan',
-  factoring: 'Factoring',
+  loan: 'Prêt',
+  factoring: 'Affacturage',
 }
 
 export function formatAmount(value: number): string {

@@ -69,7 +69,7 @@ function ProblemCard({
               </span>
               {!problem.clientFacing && (
                 <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
-                  Excluded from client communication
+                  Exclu de la communication client
                 </span>
               )}
             </div>
@@ -84,7 +84,7 @@ function ProblemCard({
             {problem.clientFacing && problem.clientFacingLabel && (
               <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5">
                 <p className="text-xs font-semibold tracking-wide text-emerald-800 uppercase">
-                  Client request
+                  Demande au client
                 </p>
                 <p className="mt-1 text-sm text-emerald-950">
                   {problem.clientFacingLabel}
@@ -94,7 +94,7 @@ function ProblemCard({
 
             <div className="mt-4 border-t border-slate-200 pt-4">
               <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                Recommended action
+                Action recommandée
               </p>
               <p className="mt-1 text-sm font-medium text-slate-900">
                 {problem.recommendedAction}
@@ -131,7 +131,8 @@ function ProblemGroup({
           </p>
         </div>
         <p className="shrink-0 text-xs font-semibold text-slate-500">
-          {selectedCount} of {problems.length} selected
+          {selectedCount} sur {problems.length}{' '}
+          {selectedCount === 1 ? 'sélectionné' : 'sélectionnés'}
         </p>
       </div>
 
@@ -168,51 +169,50 @@ export function ProblemChecklist({
       <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
           <p className="text-xs font-semibold tracking-widest text-emerald-700 uppercase">
-            Analyst validation
+            Validation analyste
           </p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
-            Detected problem checklist
+            Liste des problèmes détectés
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Confirm which detected issues should remain selected before
-            preparing client communication.
+            Confirmez les problèmes à conserver avant de préparer la
+            communication au client.
           </p>
         </div>
         <p className="text-sm font-medium text-slate-500">
-          {problems.length} {problems.length === 1 ? 'problem' : 'problems'}{' '}
-          detected
+          {problems.length}{' '}
+          {problems.length === 1 ? 'problème détecté' : 'problèmes détectés'}
         </p>
       </div>
 
       {problems.length === 0 ? (
         <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-6">
           <p className="text-sm font-semibold text-emerald-950">
-            No document problems detected
+            Aucun problème documentaire détecté
           </p>
           <p className="mt-1 text-sm leading-6 text-emerald-800">
-            The current review does not require client follow-up or
-            analyst-only validation.
+            Ce contrôle ne nécessite ni relance client ni validation interne.
           </p>
         </div>
       ) : (
         <div className="mt-7 grid gap-8">
           {clientFacingProblems.length > 0 && (
             <ProblemGroup
-              description="Selected requests can be included in the client follow-up email."
+              description="Les demandes sélectionnées peuvent être incluses dans l’e-mail de relance au client."
               onSelectionChange={onSelectionChange}
               problems={clientFacingProblems}
               selectedProblemIds={selectedProblemIds}
-              title="Client-facing requests"
+              title="Demandes destinées au client"
             />
           )}
 
           {analystOnlyProblems.length > 0 && (
             <ProblemGroup
-              description="These issues remain internal and are never included in client communication."
+              description="Ces problèmes restent internes et ne sont jamais inclus dans la communication au client."
               onSelectionChange={onSelectionChange}
               problems={analystOnlyProblems}
               selectedProblemIds={selectedProblemIds}
-              title="Analyst-only context"
+              title="Contexte réservé à l’analyste"
             />
           )}
         </div>
@@ -234,10 +234,12 @@ export function ProblemChecklist({
           }`}
         >
           {hasSelectedClientFacingProblem
-            ? `${selectedClientFacingCount} client ${
-                selectedClientFacingCount === 1 ? 'request is' : 'requests are'
-              } ready for email generation`
-            : 'Email generation is not available'}
+            ? `${selectedClientFacingCount} ${
+                selectedClientFacingCount === 1
+                  ? 'demande client est prête'
+                  : 'demandes client sont prêtes'
+              } pour la génération de l’e-mail`
+            : 'La génération de l’e-mail n’est pas disponible'}
         </p>
         <p
           className={`mt-1 text-sm leading-6 ${
@@ -247,10 +249,10 @@ export function ProblemChecklist({
           }`}
         >
           {hasSelectedClientFacingProblem
-            ? 'Only selected client-facing requests will be sent to the email assistant.'
+            ? 'Seules les demandes client sélectionnées seront transmises à l’assistant de rédaction.'
             : clientFacingProblems.length === 0
-              ? 'No client-facing problems were detected for this application.'
-              : 'Select at least one client-facing request before generating an email.'}
+              ? 'Aucun problème à communiquer au client n’a été détecté pour cette demande.'
+              : 'Sélectionnez au moins une demande client avant de générer un e-mail.'}
         </p>
       </div>
     </section>

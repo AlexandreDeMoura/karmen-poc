@@ -20,7 +20,7 @@ export class EmailPreviewService {
     for (const selectedId of selectedIds) {
       if (!problemById.has(selectedId)) {
         throw new BadRequestException(
-          `Selected problem ID "${selectedId}" was not found in the application review`,
+          `Le problème sélectionné « ${selectedId} » est absent du contrôle de la demande`,
         );
       }
     }
@@ -38,7 +38,7 @@ export class EmailPreviewService {
 
     if (includedProblems.length === 0) {
       throw new BadRequestException(
-        'At least one selected problem must be client-facing and email-capable',
+        'Au moins un problème sélectionné doit pouvoir être communiqué au client par e-mail',
       );
     }
 
@@ -49,7 +49,7 @@ export class EmailPreviewService {
 
       if (!buildEmailFragment) {
         throw new Error(
-          `Problem "${problem.id}" was included without an email fragment`,
+          `Le problème « ${problem.id} » a été inclus sans contenu pour l’e-mail`,
         );
       }
 
@@ -67,7 +67,7 @@ export class EmailPreviewService {
 function validateSelectedProblemIds(value: unknown): string[] {
   if (!isStringArray(value)) {
     throw new BadRequestException(
-      'selectedProblemIds must be an array of strings',
+      'selectedProblemIds doit être un tableau de chaînes de caractères',
     );
   }
 
@@ -76,7 +76,7 @@ function validateSelectedProblemIds(value: unknown): string[] {
   for (const selectedId of value) {
     if (seenIds.has(selectedId)) {
       throw new BadRequestException(
-        `Selected problem ID "${selectedId}" is duplicated`,
+        `Le problème sélectionné « ${selectedId} » est présent plusieurs fois`,
       );
     }
 

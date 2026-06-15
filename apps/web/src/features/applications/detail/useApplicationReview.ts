@@ -3,6 +3,7 @@ import type { ApplicationReview } from '../application.types'
 import {
   ApplicationsApiError,
   fetchApplicationReview,
+  getApplicationsErrorMessage,
 } from '../applications.api'
 
 type ApplicationReviewState =
@@ -30,10 +31,10 @@ export function useApplicationReview(applicationId: string) {
 
         setState({
           status: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'An unknown request error occurred.',
+          message: getApplicationsErrorMessage(
+            error,
+            'Impossible de contacter l’API. Vérifiez qu’elle est démarrée.',
+          ),
           notFound:
             error instanceof ApplicationsApiError && error.status === 404,
         })
