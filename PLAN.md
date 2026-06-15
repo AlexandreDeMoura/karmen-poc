@@ -165,7 +165,7 @@ apps/api/src/applications/application-review-summary.service.ts
 
 ### 4. Add the applications service and controller
 
-Create:
+Implemented:
 
 ```txt
 apps/api/src/applications/applications.service.ts
@@ -182,11 +182,11 @@ Responsibilities:
   service, and controller;
 - `AppModule` imports `ApplicationsModule`.
 
-Keep the existing `/api/health` endpoint unchanged.
+The existing `/api/health` endpoint remains unchanged.
 
 ### 5. Add backend tests
 
-Cover:
+Implemented coverage for:
 
 - all four fixtures load successfully;
 - missing and malformed fixtures fail with useful errors;
@@ -197,15 +197,18 @@ Cover:
 - `GET /applications` returns four items with the documented response shape
   and expected statuses.
 
-Use temporary fixture directories in loader unit tests so tests do not modify
-the real `data/` directory.
+Loader unit tests use temporary fixture directories so tests do not modify the
+real `data/` directory. `applications.service.spec.ts` verifies the exact list
+projection, deterministic order, problem counts, and statuses. The e2e suite
+verifies that the Nest application exposes the same contract at
+`GET /applications`.
 
 ## Frontend Implementation
 
 ### 1. Connect the Vite development proxy
 
-The current proxy only forwards `/api`. Add `/applications` to
-`apps/web/vite.config.ts`, targeting `http://localhost:3000`.
+Implemented `/applications` in `apps/web/vite.config.ts`, targeting
+`http://localhost:3000` alongside the existing `/api` proxy.
 
 The frontend can then call:
 
@@ -313,22 +316,42 @@ UI behavior and appearance will be manually QA'd by the user.
 
 ## Current State
 
-Tasks 1 through 4 are complete: the four fixtures and backend contracts are in
-place, the API can load and cache the expected runtime JSON files with
-lightweight validation, and the list review-summary rules produce deterministic
-problem counts and statuses. Loader and summary unit tests, the backend build,
-and production-source lint checks pass, so Task 5 can expose
-`GET /applications`.
+Tasks 1 through 6 are complete. The API loads and validates the four fixtures,
+computes deterministic review summaries, projects them into
+`ApplicationListItem[]`, and exposes them through `GET /applications`.
+`ApplicationsModule` owns the loader, summary, list service, and controller,
+and `AppModule` imports that module without changing `/api/health`.
+
+The Vite development server proxies `/applications` to
+`http://localhost:3000`. The frontend uses that relative endpoint through a
+typed API client with response validation and abort support.
+
+The root page now renders the responsive application list with readable enum
+labels, EUR amount formatting, review status badges, risk context, global
+scores, and problem counts. Loading, empty, and retryable API error states are
+included.
+
+Verification completed for this implementation:
+
+- backend unit tests: 16 passed;
+- backend e2e tests: 3 passed, including the exact `/applications` response;
+- backend build: passed;
+- production API files and `vite.config.ts`: targeted lint passed;
+- changed TypeScript files: formatting checks passed.
+- frontend production build: passed;
+- frontend lint: passed.
+
+No UI verification was performed.
 
 ## Implementation Order
 
-1. Add the four JSON files to root `data/`.
-2. Define backend input and response types.
-3. Implement and test the JSON loader.
-4. Implement and test list review-summary rules.
-5. Expose and test `GET /applications`.
-6. Add the Vite `/applications` proxy.
-7. Add the frontend API client and list components.
-8. Add loading, empty, and error states.
-9. Run backend automated tests and TypeScript/build checks.
-10. Hand the running page to the user for manual UI QA.
+1. [x] Add the four JSON files to root `data/`.
+2. [x] Define backend input and response types.
+3. [x] Implement and test the JSON loader.
+4. [x] Implement and test list review-summary rules.
+5. [x] Expose and test `GET /applications`.
+6. [x] Add the Vite `/applications` proxy.
+7. [x] Add the frontend API client and list components.
+8. [x] Add loading, empty, and error states.
+9. [ ] Run final backend automated tests and frontend TypeScript/build checks.
+10. [ ] Hand the running page to the user for manual UI QA.
