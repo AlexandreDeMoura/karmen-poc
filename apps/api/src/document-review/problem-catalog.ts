@@ -21,7 +21,7 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     buildClientFacingLabel: (metadata) =>
       `Missing tax return for fiscal year ${readNumber(metadata, 'year')}`,
     buildEmailFragment: (metadata) =>
-      `the tax return for fiscal year ${readNumber(metadata, 'year')}`,
+      `la liasse fiscale de l’exercice ${readNumber(metadata, 'year')}`,
   }),
   MISSING_BANK_STATEMENT_MONTHS: catalogEntry({
     code: 'MISSING_BANK_STATEMENT_MONTHS',
@@ -34,7 +34,7 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     buildClientFacingLabel: (metadata) =>
       `Bank statements cover ${readNumber(metadata, 'detectedMonths')}/${readNumber(metadata, 'expectedMonths')} required months`,
     buildEmailFragment: () =>
-      'the missing bank statements required to cover the last 12 months',
+      'les relevés bancaires manquants afin de couvrir les 12 derniers mois',
   }),
   EXTRACTION_FAILED: catalogEntry({
     code: 'EXTRACTION_FAILED',
@@ -58,7 +58,7 @@ export const PROBLEM_CATALOG: ProblemCatalog = Object.freeze({
     buildClientFacingLabel: () =>
       'The uploaded document appears to be a scanned PDF',
     buildEmailFragment: () =>
-      'the original PDF downloaded from your bank or accounting software, instead of a scan or photo',
+      'le PDF original téléchargé depuis votre espace bancaire ou votre logiciel comptable, plutôt qu’un scan ou une photo',
   }),
   MULTIPLE_BANK_ACCOUNTS_TO_REVIEW: catalogEntry({
     code: 'MULTIPLE_BANK_ACCOUNTS_TO_REVIEW',

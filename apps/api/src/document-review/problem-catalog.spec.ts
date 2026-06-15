@@ -33,7 +33,7 @@ describe('PROBLEM_CATALOG', () => {
       'Missing tax return for fiscal year 2023',
     );
     expect(missingTaxReturn.buildEmailFragment?.({ year: 2023 })).toBe(
-      'the tax return for fiscal year 2023',
+      'la liasse fiscale de l’exercice 2023',
     );
     expect(missingTaxReturn.buildDescription({ year: 2023 })).toBe(
       'No tax return was received for fiscal year 2023.',
@@ -52,6 +52,16 @@ describe('PROBLEM_CATALOG', () => {
       }),
     ).toBe(
       'Bank statements for account FR761234 cover 6 of 12 required months.',
+    );
+    expect(missingBankMonths.buildEmailFragment?.({})).toBe(
+      'les relevés bancaires manquants afin de couvrir les 12 derniers mois',
+    );
+    expect(
+      getProblemCatalogEntry('SCANNED_PDF_NO_TEXT_LAYER').buildEmailFragment?.(
+        {},
+      ),
+    ).toBe(
+      'le PDF original téléchargé depuis votre espace bancaire ou votre logiciel comptable, plutôt qu’un scan ou une photo',
     );
   });
 

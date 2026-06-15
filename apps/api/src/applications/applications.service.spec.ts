@@ -1,6 +1,7 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { MockDocumentDiagnosticsService } from '../document-diagnostics/mock-document-diagnostics.service';
 import { DocumentReviewService } from '../document-review/document-review.service';
+import { EmailPreviewService } from '../email/email-preview.service';
 import { ApplicationDataService } from './application-data.service';
 import { ApplicationsService } from './applications.service';
 
@@ -9,6 +10,7 @@ describe('ApplicationsService', () => {
   const service = new ApplicationsService(
     new ApplicationDataService(),
     new DocumentReviewService(diagnosticsService),
+    new EmailPreviewService(),
   );
 
   it.each([
@@ -46,6 +48,50 @@ describe('ApplicationsService', () => {
     expect(() => service.getReview('fr-999')).toThrow(
       'Application "fr-999" not found',
     );
+  });
+
+  it('generates an email preview from the application review problems', () => {
+    expect(
+      service.generateEmailPreview('fr-004', [
+        'SCANNED_PDF_NO_TEXT_LAYER:d-012',
+        'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
+      ]),
+    ).toEqual({
+      subject:
+        'Documents complémentaires nécessaires pour finaliser votre demande',
+      body: [
+        'Bonjour,',
+        '',
+        'Merci pour les documents transmis.',
+        '',
+        'Pour finaliser l’analyse de votre demande, pouvez-vous nous transmettre :',
+        '',
+        '- les relevés bancaires manquants afin de couvrir les 12 derniers mois ;',
+        '- le PDF original téléchargé depuis votre espace bancaire ou votre logiciel comptable, plutôt qu’un scan ou une photo.',
+        '',
+        'Merci d’avance,',
+        '',
+        'L’équipe Karmen',
+      ].join('\n'),
+      includedProblemIds: [
+        'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
+        'SCANNED_PDF_NO_TEXT_LAYER:d-012',
+      ],
+    });
+  });
+
+  it('propagates email preview validation errors', () => {
+    expect(() =>
+      service.generateEmailPreview('fr-004', 'not-an-array'),
+    ).toThrow(
+      new BadRequestException('selectedProblemIds must be an array of strings'),
+    );
+  });
+
+  it('throws NotFoundException before generating an email for an unknown application', () => {
+    expect(() =>
+      service.generateEmailPreview('fr-999', ['MISSING_TAX_RETURN_YEAR:2023']),
+    ).toThrow(new NotFoundException('Application "fr-999" not found'));
   });
 
   it('projects the four fixtures into deterministic list items', () => {

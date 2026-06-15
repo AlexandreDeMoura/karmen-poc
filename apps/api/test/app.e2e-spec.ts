@@ -233,6 +233,64 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/applications/fr-004/email-preview (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/applications/fr-004/email-preview')
+      .send({
+        selectedProblemIds: [
+          'SCANNED_PDF_NO_TEXT_LAYER:d-012',
+          'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
+        ],
+      })
+      .expect(200)
+      .expect({
+        subject:
+          'Documents complémentaires nécessaires pour finaliser votre demande',
+        body: [
+          'Bonjour,',
+          '',
+          'Merci pour les documents transmis.',
+          '',
+          'Pour finaliser l’analyse de votre demande, pouvez-vous nous transmettre :',
+          '',
+          '- les relevés bancaires manquants afin de couvrir les 12 derniers mois ;',
+          '- le PDF original téléchargé depuis votre espace bancaire ou votre logiciel comptable, plutôt qu’un scan ou une photo.',
+          '',
+          'Merci d’avance,',
+          '',
+          'L’équipe Karmen',
+        ].join('\n'),
+        includedProblemIds: [
+          'MISSING_BANK_STATEMENT_MONTHS:FR7630002000001',
+          'SCANNED_PDF_NO_TEXT_LAYER:d-012',
+        ],
+      });
+  });
+
+  it('/applications/fr-004/email-preview (POST) returns 400 for invalid selection', () => {
+    return request(app.getHttpServer())
+      .post('/applications/fr-004/email-preview')
+      .send({ selectedProblemIds: 'MISSING_BANK_STATEMENT_MONTHS' })
+      .expect(400)
+      .expect({
+        message: 'selectedProblemIds must be an array of strings',
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+  });
+
+  it('/applications/fr-999/email-preview (POST) returns 404', () => {
+    return request(app.getHttpServer())
+      .post('/applications/fr-999/email-preview')
+      .send({ selectedProblemIds: ['MISSING_TAX_RETURN_YEAR:2023'] })
+      .expect(404)
+      .expect({
+        message: 'Application "fr-999" not found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });
