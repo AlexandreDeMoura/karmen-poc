@@ -19,4 +19,10 @@ describe('AppController', () => {
       expect(appController.getHello()).toBe('Hello World!');
     });
   });
+
+  describe('health', () => {
+    it('should confirm the API is connected', () => {
+      expect(appController.getHealth()).toEqual({ message: 'API connected' });
+    });
+  });
 });

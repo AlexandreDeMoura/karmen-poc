@@ -17,6 +17,29 @@
   }
 }
 
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+
+  span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #a1a1aa;
+  }
+}
+
+.api-status--connected span {
+  background: #22c55e;
+}
+
+.api-status--error span {
+  background: #ef4444;
+}
+
 .hero {
   position: relative;
 

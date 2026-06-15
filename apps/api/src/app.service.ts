@@ -5,4 +5,8 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
+
+  getHealth(): { message: string } {
+    return { message: 'API connected' };
+  }
 }
