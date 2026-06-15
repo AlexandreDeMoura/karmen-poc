@@ -269,19 +269,6 @@ UI behavior:
 
 No new frontend package is required.
 
-## Implementation Order
-
-1. Add the four JSON files to root `data/`.
-2. Define backend input and response types.
-3. Implement and test the JSON loader.
-4. Implement and test list review-summary rules.
-5. Expose and test `GET /applications`.
-6. Add the Vite `/applications` proxy.
-7. Add the frontend API client and list components.
-8. Add loading, empty, and error states.
-9. Run backend automated tests and TypeScript/build checks.
-10. Hand the running page to the user for manual UI QA.
-
 ## Acceptance Criteria
 
 - The API starts with the four JSON fixtures loaded in memory.
@@ -323,3 +310,24 @@ curl http://localhost:3000/applications
 ```
 
 UI behavior and appearance will be manually QA'd by the user.
+
+## Current State
+
+Tasks 1 and 2 are complete: the four fixtures are in root `data/`, and
+`apps/api/src/applications/` now defines the full fixture input types separately
+from the smaller `ApplicationListItem` API response contract. The backend build
+and lint checks pass, so Task 3 can implement runtime loading and validation
+against these types.
+
+## Implementation Order
+
+1. Add the four JSON files to root `data/`.
+2. Define backend input and response types.
+3. Implement and test the JSON loader.
+4. Implement and test list review-summary rules.
+5. Expose and test `GET /applications`.
+6. Add the Vite `/applications` proxy.
+7. Add the frontend API client and list components.
+8. Add loading, empty, and error states.
+9. Run backend automated tests and TypeScript/build checks.
+10. Hand the running page to the user for manual UI QA.
