@@ -68,6 +68,38 @@ describe('ApplicationDataService', () => {
     expect(service.getApplications()).toBe(firstLoad);
   });
 
+  it('indexes applications by financing request ID', () => {
+    writeExpectedFixtures(fixtureDirectory);
+    const service = new ApplicationDataService(fixtureDirectory);
+    const applications = service.getApplications();
+
+    applications.forEach((application) => {
+      expect(
+        service.getApplicationByFinancingRequestId(
+          application.financing_request.id,
+        ),
+      ).toBe(application);
+    });
+    expect(
+      service.getApplicationByFinancingRequestId('unknown-application'),
+    ).toBeUndefined();
+  });
+
+  it('reuses the cached index without parsing the files again', () => {
+    writeExpectedFixtures(fixtureDirectory);
+    const service = new ApplicationDataService(fixtureDirectory);
+    const application = service.getApplicationByFinancingRequestId('fr-1');
+
+    writeFileSync(
+      join(fixtureDirectory, APPLICATION_FIXTURE_FILENAMES[0]),
+      'not valid JSON',
+    );
+
+    expect(service.getApplicationByFinancingRequestId('fr-1')).toBe(
+      application,
+    );
+  });
+
   it('fails with the missing fixture filename', () => {
     writeExpectedFixtures(fixtureDirectory);
     rmSync(join(fixtureDirectory, APPLICATION_FIXTURE_FILENAMES[1]));

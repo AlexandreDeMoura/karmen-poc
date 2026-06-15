@@ -1,14 +1,31 @@
+import { NotFoundException } from '@nestjs/common';
 import { ApplicationDataService } from './application-data.service';
 import { ApplicationReviewSummaryService } from './application-review-summary.service';
 import { ApplicationsService } from './applications.service';
 
 describe('ApplicationsService', () => {
-  it('projects the four fixtures into deterministic list items', () => {
-    const service = new ApplicationsService(
-      new ApplicationDataService(),
-      new ApplicationReviewSummaryService(),
-    );
+  const service = new ApplicationsService(
+    new ApplicationDataService(),
+    new ApplicationReviewSummaryService(),
+  );
 
+  it.each([
+    ['fr-001', 'Brasserie du Marais'],
+    ['fr-002', 'Studio Pixel'],
+    ['fr-003', 'Transport Leclerc Express'],
+    ['fr-004', 'Fleurs de Saison'],
+  ])('resolves application %s from the indexed fixtures', (id, companyName) => {
+    expect(service.getById(id).company.name).toBe(companyName);
+  });
+
+  it('throws NotFoundException for an unknown application ID', () => {
+    expect(() => service.getById('fr-999')).toThrow(NotFoundException);
+    expect(() => service.getById('fr-999')).toThrow(
+      'Application "fr-999" not found',
+    );
+  });
+
+  it('projects the four fixtures into deterministic list items', () => {
     expect(service.list()).toEqual([
       {
         applicationId: 'fr-001',

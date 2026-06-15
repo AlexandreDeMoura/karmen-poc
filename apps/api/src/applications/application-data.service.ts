@@ -19,9 +19,14 @@ export const APPLICATION_FIXTURE_FILENAMES = [
 
 const DEFAULT_DATA_DIRECTORY = resolve(__dirname, '../../../../data');
 
+interface ApplicationDataCache {
+  applications: readonly Application[];
+  applicationByFinancingRequestId: ReadonlyMap<string, Application>;
+}
+
 @Injectable()
 export class ApplicationDataService implements OnModuleInit {
-  private applications: readonly Application[] | undefined;
+  private cache: ApplicationDataCache | undefined;
 
   constructor(
     @Optional()
@@ -34,17 +39,30 @@ export class ApplicationDataService implements OnModuleInit {
   }
 
   getApplications(): readonly Application[] {
-    if (!this.applications) {
-      this.applications = this.loadApplications();
-    }
-
-    return this.applications;
+    return this.getCache().applications;
   }
 
-  private loadApplications(): readonly Application[] {
-    const fixtureByFinancingRequestId = new Map<string, string>();
+  getApplicationByFinancingRequestId(
+    financingRequestId: string,
+  ): Application | undefined {
+    return this.getCache().applicationByFinancingRequestId.get(
+      financingRequestId,
+    );
+  }
 
-    return APPLICATION_FIXTURE_FILENAMES.map((filename) => {
+  private getCache(): ApplicationDataCache {
+    if (!this.cache) {
+      this.cache = this.loadCache();
+    }
+
+    return this.cache;
+  }
+
+  private loadCache(): ApplicationDataCache {
+    const fixtureByFinancingRequestId = new Map<string, string>();
+    const applicationByFinancingRequestId = new Map<string, Application>();
+
+    const applications = APPLICATION_FIXTURE_FILENAMES.map((filename) => {
       const application = this.loadFixture(filename);
       const financingRequestId = application.financing_request.id;
       const existingFilename =
@@ -57,8 +75,11 @@ export class ApplicationDataService implements OnModuleInit {
       }
 
       fixtureByFinancingRequestId.set(financingRequestId, filename);
+      applicationByFinancingRequestId.set(financingRequestId, application);
       return application;
     });
+
+    return { applications, applicationByFinancingRequestId };
   }
 
   private loadFixture(filename: string): Application {

@@ -8,7 +8,7 @@ import type {
 import type { DocumentDiagnostic } from '../document-diagnostics/document-diagnostic.types';
 
 export interface DocumentRequirements {
-  expectedTaxReturnYears: number[];
+  expectedTaxReturnYears: readonly number[];
   expectedBankStatementMonths: number;
 }
 

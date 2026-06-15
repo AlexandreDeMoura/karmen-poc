@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ApplicationDataService } from './application-data.service';
 import type { ApplicationListItem } from './application-list-item.types';
 import { ApplicationReviewSummaryService } from './application-review-summary.service';
+import type { Application } from './application.types';
 
 @Injectable()
 export class ApplicationsService {
@@ -9,6 +10,19 @@ export class ApplicationsService {
     private readonly applicationDataService: ApplicationDataService,
     private readonly applicationReviewSummaryService: ApplicationReviewSummaryService,
   ) {}
+
+  getById(applicationId: string): Application {
+    const application =
+      this.applicationDataService.getApplicationByFinancingRequestId(
+        applicationId,
+      );
+
+    if (!application) {
+      throw new NotFoundException(`Application "${applicationId}" not found`);
+    }
+
+    return application;
+  }
 
   list(): ApplicationListItem[] {
     return this.applicationDataService.getApplications().map((application) => {

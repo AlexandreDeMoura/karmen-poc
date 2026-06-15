@@ -1,25 +1,25 @@
 export type ExtractionStatus = 'success' | 'partial_success' | 'failed';
 
 export interface DocumentDiagnostic {
-  documentId: string;
-  extractionStatus: ExtractionStatus;
-  source: 'mocked_document_pipeline';
-  pdfPrecheck?: {
-    hasTextLayer?: boolean;
-    likelyScannedPdf?: boolean;
-    isPasswordProtected?: boolean;
-    isCorrupted?: boolean;
+  readonly documentId: string;
+  readonly extractionStatus: ExtractionStatus;
+  readonly source: 'mocked_document_pipeline';
+  readonly pdfPrecheck?: {
+    readonly hasTextLayer?: boolean;
+    readonly likelyScannedPdf?: boolean;
+    readonly isPasswordProtected?: boolean;
+    readonly isCorrupted?: boolean;
   };
-  qualitySignals?: {
-    lowResolution?: boolean;
-    blurDetected?: boolean;
-    croppedPageDetected?: boolean;
-    skewDetected?: boolean;
+  readonly qualitySignals?: {
+    readonly lowResolution?: boolean;
+    readonly blurDetected?: boolean;
+    readonly croppedPageDetected?: boolean;
+    readonly skewDetected?: boolean;
   };
-  extractedFields?: {
-    detectedPeriodLabel?: string;
-    monthsCovered?: number;
-    bankName?: string;
-    fiscalYear?: number;
+  readonly extractedFields?: {
+    readonly detectedPeriodLabel?: string;
+    readonly monthsCovered?: number;
+    readonly bankName?: string;
+    readonly fiscalYear?: number;
   };
 }
